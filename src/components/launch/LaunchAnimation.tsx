@@ -174,8 +174,8 @@ function LaunchAnimationInner() {
       .to(subRef.current, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 2.85)
       .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 3.05);
 
-    // Sparks: logo impact at 1.3s (when shooting star explodes into logo);
-    // beam ignition at 1.9s (when the line first appears).
+    // Spark burst at logo impact (t=1.3s) only. Beam ignition no longer
+    // sparks (felt cluttered against the line itself).
     burst(
       1.3,
       "[data-spark='logo']",
@@ -189,7 +189,6 @@ function LaunchAnimationInner() {
       0.22,
       0.36,
     );
-    burst(1.9, "[data-spark='beam']", beamOrigin, 14, 24, 0.18, 0.28);
 
     function finish() {
       window.removeEventListener("resize", positionBeam);
@@ -233,8 +232,21 @@ function LaunchAnimationInner() {
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
-      {/* Mirror Nav header so the logo + wordmark sit at the same pixels as
-          the real Nav.Logo, regardless of viewport width. */}
+      {/* Beam rendered FIRST so it paints UNDER the header (logo + wordmark).
+          The line visually emerges from behind the logo, never crossing over
+          the glyph or the "StarryTrader" text. Position + rotation set in JS. */}
+      <div
+        ref={beamRef}
+        className="pointer-events-none absolute"
+        style={{
+          height: 1,
+          background: "linear-gradient(to right, rgba(127,200,255,0.9), rgba(127,200,255,0))",
+          filter: "blur(0.5px)",
+        }}
+      />
+
+      {/* Mirror Nav header. Painted AFTER the beam so logo + wordmark stay
+          visually clean. */}
       <div className="absolute inset-x-0 top-0">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 md:px-8">
           <span className="inline-flex items-center gap-3">
@@ -283,23 +295,11 @@ function LaunchAnimationInner() {
         />
       </div>
 
-      {/* Beam: 1px tall gradient line. Position + rotation set in JS. */}
-      <div
-        ref={beamRef}
-        className="pointer-events-none absolute"
-        style={{
-          height: 1,
-          background: "linear-gradient(to right, rgba(127,200,255,0.9), rgba(127,200,255,0))",
-          filter: "blur(0.5px)",
-        }}
-      />
-
-      {/* Spark dots — 8 for the logo impact, 5 for the beam ignition.
-          Start at opacity 0 off-canvas; positioned + animated by GSAP. */}
-      {Array.from({ length: 13 }).map((_, i) => (
+      {/* Logo impact sparks — 8 dots, positioned + animated by GSAP at t=1.3s. */}
+      {Array.from({ length: 8 }).map((_, i) => (
         <div
           key={`spark-${i}`}
-          data-spark={i < 8 ? "logo" : "beam"}
+          data-spark="logo"
           className="pointer-events-none absolute left-0 top-0 h-[3px] w-[3px] rounded-full opacity-0"
           style={{
             background: "#7FC8FF",
