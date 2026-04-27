@@ -42,11 +42,12 @@ export function PillarsPinned() {
       gsap.set(phones.slice(1), { opacity: 0, scale: 0.96 });
 
       const tl = gsap.timeline({
+        defaults: { ease: "power2.out" },
         scrollTrigger: {
           trigger: root,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.8,
+          scrub: 0.3,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const idx = Math.min(2, Math.floor(self.progress * 3));
@@ -55,14 +56,20 @@ export function PillarsPinned() {
         },
       });
 
-      tl.to(texts[0], { opacity: 0, y: -24, duration: 1 }, 1)
-        .to(phones[0], { opacity: 0, scale: 0.96, duration: 1 }, 1)
-        .to(texts[1], { opacity: 1, y: 0, duration: 1 }, 1.1)
-        .to(phones[1], { opacity: 1, scale: 1, duration: 1 }, 1.1)
-        .to(texts[1], { opacity: 0, y: -24, duration: 1 }, 2.5)
-        .to(phones[1], { opacity: 0, scale: 0.96, duration: 1 }, 2.5)
-        .to(texts[2], { opacity: 1, y: 0, duration: 1 }, 2.6)
-        .to(phones[2], { opacity: 1, scale: 1, duration: 1 }, 2.6);
+      // Three equal scroll thirds. Each transition is ~0.4 of a third
+      // (snappy enough not to feel laggy, slow enough to read).
+      // Pillar 1 visible 0..0.33 → fades out 0.33..0.45
+      // Pillar 2 fades in 0.36..0.48, visible 0.48..0.66, fades out 0.66..0.78
+      // Pillar 3 fades in 0.69..0.81, visible 0.81..1.0
+      const fade = 0.4;
+      tl.to(texts[0], { opacity: 0, y: -20, duration: fade }, 1.0)
+        .to(phones[0], { opacity: 0, scale: 0.96, duration: fade }, 1.0)
+        .to(texts[1], { opacity: 1, y: 0, duration: fade }, 1.1)
+        .to(phones[1], { opacity: 1, scale: 1, duration: fade }, 1.1)
+        .to(texts[1], { opacity: 0, y: -20, duration: fade }, 2.0)
+        .to(phones[1], { opacity: 0, scale: 0.96, duration: fade }, 2.0)
+        .to(texts[2], { opacity: 1, y: 0, duration: fade }, 2.1)
+        .to(phones[2], { opacity: 1, scale: 1, duration: fade }, 2.1);
 
       // Layout above us (hero) hydrates after we mount; recompute pin math.
       ScrollTrigger.refresh();
@@ -86,32 +93,32 @@ export function PillarsPinned() {
   // pin-spacer behavior, which can race with hydration when the component
   // swaps from FallbackPillars to the pinned layout on enable.
   return (
-    <section ref={containerRef} className="relative" style={{ height: "320vh" }}>
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <div className="mx-auto grid h-full max-w-7xl grid-cols-[1.05fr_0.95fr] items-center gap-12 px-8">
-          <div className="relative h-full">
+    <section ref={containerRef} className="relative" style={{ height: "340vh" }}>
+      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-[1.05fr_0.95fr] items-center gap-12 px-8">
+          <div className="relative min-h-[60vh]">
             <ProgressDots count={3} active={active} />
             {pillars.map((p, i) => (
               <div
                 key={p.id}
                 data-pillar-text
-                className="absolute inset-y-0 left-0 right-0 flex flex-col justify-center"
-                style={{ opacity: i === 0 ? 1 : 0 }}
+                className="absolute inset-0 flex flex-col justify-center"
+                style={{ opacity: i === 0 ? 1 : 0, willChange: "opacity, transform" }}
               >
                 <PillarText pillar={p} />
               </div>
             ))}
           </div>
 
-          <div className="relative flex h-full items-center justify-center">
+          <div className="relative flex min-h-[60vh] items-center justify-center">
             {pillars.map((p, i) => (
               <div
                 key={p.id}
                 data-pillar-phone
-                className="absolute"
-                style={{ opacity: i === 0 ? 1 : 0 }}
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ opacity: i === 0 ? 1 : 0, willChange: "opacity, transform" }}
               >
-                <PhoneMockup ariaLabel={`${p.visualLabel} screen`}>
+                <PhoneMockup ariaLabel={`${p.visualLabel} screen`} tilt={false}>
                   <PillarScreen pillarId={p.id} />
                 </PhoneMockup>
               </div>
