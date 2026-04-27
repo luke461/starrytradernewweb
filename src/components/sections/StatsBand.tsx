@@ -1,6 +1,6 @@
 "use client";
 
-import { StatNumber } from "@/components/ui/StatNumber";
+import { CountUp } from "@/components/decoration/CountUp";
 import { Reveal } from "@/components/decoration/Reveal";
 import { stats } from "@/content/home";
 
@@ -15,7 +15,7 @@ export function StatsBand() {
           {stats.map((s, i) => (
             <Reveal key={s.value} delay={i * 0.08}>
               <div>
-                <StatNumber value={s.value} className="text-[56px] md:text-[64px]" />
+                <CountUp value={s.value} className="text-[56px] md:text-[64px]" />
                 <p className="mt-3 text-[14px] text-ink-soft">{s.caption}</p>
               </div>
             </Reveal>

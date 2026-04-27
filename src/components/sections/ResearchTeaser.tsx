@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
-import { StatNumber } from "@/components/ui/StatNumber";
+import { CountUp } from "@/components/decoration/CountUp";
 import { Reveal } from "@/components/decoration/Reveal";
 import { problemStats } from "@/content/home";
 
@@ -21,7 +21,7 @@ export function ResearchTeaser() {
           {problemStats.map((s, i) => (
             <Reveal key={s.value} delay={i * 0.08}>
               <Card glow="blue" interactive className="h-full">
-                <StatNumber value={s.value} className="text-[64px] md:text-[72px]" />
+                <CountUp value={s.value} className="text-[64px] md:text-[72px]" />
                 <p className="mt-5 text-body-lg text-ink-primary">{s.headline}</p>
                 <p className="mt-4 font-mono text-caption uppercase tracking-[0.14em] text-ink-muted">
                   Source: {s.source}

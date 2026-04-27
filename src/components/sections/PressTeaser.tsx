@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Sparkle, Constellation } from "@/components/decoration/Sparkle";
+import { Sparkle } from "@/components/decoration/Sparkle";
 import { Reveal } from "@/components/decoration/Reveal";
+import { AnimatedConnector } from "@/components/decoration/AnimatedConnector";
 import { press } from "@/content/home";
 
 export function PressTeaser() {
@@ -46,11 +47,7 @@ export function PressTeaser() {
           ))}
 
           <div className="hidden lg:flex pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 items-center justify-center">
-            <div className="flex w-1/2 items-center gap-3">
-              <Constellation tone="violet-soft" className="h-10 w-40 opacity-50" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-on-light-soft">Singapore ↔ Chicago</span>
-              <Constellation tone="violet-soft" className="h-10 w-40 opacity-50" />
-            </div>
+            <AnimatedConnector label="Singapore ↔ Chicago" surface="light" />
           </div>
         </div>
 

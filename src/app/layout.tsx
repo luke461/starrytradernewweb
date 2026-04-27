@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
 import { StarField } from "@/components/decoration/StarField";
+import { CursorFollow } from "@/components/decoration/CursorFollow";
 import { UiProvider } from "@/components/providers/UiProvider";
 import "./globals.css";
 
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           }}
         />
         <StarField />
+        <CursorFollow />
         <UiProvider>
           <Nav />
           <main className="relative z-10">{children}</main>

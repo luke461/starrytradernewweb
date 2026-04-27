@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Reveal } from "@/components/decoration/Reveal";
+import { ReadingProgress } from "@/components/decoration/ReadingProgress";
 import { Sparkle } from "@/components/decoration/Sparkle";
 import { blogPosts, getBlogPost, getRelatedPosts } from "@/content/blog-posts";
 
@@ -38,6 +39,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
 
   return (
     <article className="relative">
+      <ReadingProgress />
       <header className="relative overflow-hidden pt-24 pb-16 md:pt-32 md:pb-20">
         <div className="absolute inset-0 bg-hero-cosmic opacity-80" aria-hidden />
         <div className="relative mx-auto max-w-3xl px-5 md:px-8">

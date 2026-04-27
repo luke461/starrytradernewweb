@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Sparkle } from "@/components/decoration/Sparkle";
+import { TooManyWords, NsBunkToNus } from "@/components/sections/TooManyWords";
 import { team } from "@/content/home";
 import { getTeamBio } from "@/content/team-bios";
 import { blogPosts } from "@/content/blog-posts";
@@ -52,6 +53,14 @@ export default async function TeamMemberPage({ params }: { params: Params }) {
         </div>
       </header>
 
+      {slug === "andre-liu" && (
+        <section className="relative pb-12">
+          <div className="mx-auto max-w-4xl px-5 md:px-8">
+            <TooManyWords />
+          </div>
+        </section>
+      )}
+
       <section className="relative pb-24">
         <div className="mx-auto grid max-w-4xl grid-cols-1 gap-10 px-5 md:grid-cols-[1.4fr_1fr] md:px-8">
           <div>
@@ -61,6 +70,7 @@ export default async function TeamMemberPage({ params }: { params: Params }) {
                 <p key={i}>{p}</p>
               ))}
             </div>
+            {slug === "andre-liu" && <NsBunkToNus />}
           </div>
 
           <aside className="space-y-6">

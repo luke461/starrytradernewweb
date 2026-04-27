@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Pillars } from "@/components/sections/Pillars";
+import { PillarsPinned } from "@/components/sections/PillarsPinned";
 import { Reviews } from "@/components/sections/Reviews";
 import { StatsBand } from "@/components/sections/StatsBand";
 import { Reveal } from "@/components/decoration/Reveal";
@@ -27,9 +27,33 @@ export default function ProductPage() {
         </div>
       </section>
 
-      <Pillars />
+      <PillarsPinned />
+
+      <RoadmapAndCompliance />
+
       <StatsBand />
       <Reviews />
     </div>
+  );
+}
+
+function RoadmapAndCompliance() {
+  return (
+    <section className="relative py-20">
+      <div className="mx-auto max-w-7xl px-5 md:px-8">
+        <Reveal>
+          <div className="rounded-[20px] border border-white/[0.06] bg-gradient-to-br from-starry-mid to-starry-soft p-10">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-starry-blue-light">Roadmap</p>
+            <p className="mt-2 text-sub text-ink-primary">What’s next.</p>
+            <p className="mt-3 max-w-3xl text-body text-ink-soft">
+              Future capabilities under research and development include the <span className="text-ink-primary">Bias Detector Feed</span>, the <span className="text-ink-primary">Diversification Visualiser</span>, and <span className="text-ink-primary">Strategy Squads</span> for advanced learners. Each is grounded in the same peer-reviewed research that shaped the current product.
+            </p>
+          </div>
+        </Reveal>
+        <p className="mt-10 text-center text-caption text-ink-muted">
+          StarryTrader is an education platform. We do not provide investment advice, recommend trades, or manage money on behalf of users.
+        </p>
+      </div>
+    </section>
   );
 }

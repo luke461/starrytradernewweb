@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Card } from "@/components/ui/Card";
-import { StatNumber } from "@/components/ui/StatNumber";
+import { CountUp } from "@/components/decoration/CountUp";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle } from "@/components/decoration/Sparkle";
@@ -72,7 +72,7 @@ export default function ResearchPage() {
           {problemStats.map((s, i) => (
             <Reveal key={s.value} delay={i * 0.08}>
               <Card glow="blue" interactive className="h-full !p-10">
-                <StatNumber value={s.value} className="text-[96px] md:text-[120px]" />
+                <CountUp value={s.value} className="text-[96px] md:text-[120px]" duration={1400} />
                 <p className="mt-6 text-body-lg text-ink-primary">{s.headline}</p>
                 <p className="mt-4 font-mono text-caption uppercase tracking-[0.14em] text-ink-muted">Source: {s.source}</p>
               </Card>
