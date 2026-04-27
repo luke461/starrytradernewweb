@@ -64,23 +64,44 @@ function LaunchAnimationInner() {
       gsap.set(phoneScreenRef.current.querySelectorAll("[data-launch-card]"), { opacity: 0, y: 6 });
     }
 
+    // Beam origin is offset OUT of the logo glyph by ~18px (logo radius + a
+    // small gap) along the beam direction so it doesn't paint through the
+    // logo on its way to the phone. Length is reduced by the same offset.
     function positionBeam() {
       if (!logoStarRef.current || !phoneRef.current || !beamRef.current) return;
       const logo = logoStarRef.current.getBoundingClientRect();
       const phone = phoneRef.current.getBoundingClientRect();
-      const sx = logo.left + logo.width / 2;
-      const sy = logo.top + logo.height / 2;
-      const ex = isMobile ? sx : phone.left + phone.width / 2;
+      const cx = logo.left + logo.width / 2;
+      const cy = logo.top + logo.height / 2;
+      const ex = isMobile ? cx : phone.left + phone.width / 2;
       const ey = isMobile ? phone.top + 40 : phone.top + 60;
-      const dx = ex - sx;
-      const dy = ey - sy;
-      const len = Math.hypot(dx, dy);
-      const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+      const fullDx = ex - cx;
+      const fullDy = ey - cy;
+      const fullLen = Math.hypot(fullDx, fullDy) || 1;
+      const offset = 18;
+      const sx = cx + (fullDx / fullLen) * offset;
+      const sy = cy + (fullDy / fullLen) * offset;
+      const len = Math.max(0, fullLen - offset);
+      const angle = (Math.atan2(fullDy, fullDx) * 180) / Math.PI;
       const el = beamRef.current;
       el.style.left = `${sx}px`;
       el.style.top = `${sy}px`;
       el.style.width = `${len}px`;
       el.style.transform = `rotate(${angle}deg) scaleX(0)`;
+    }
+    function beamOrigin() {
+      if (!logoStarRef.current || !phoneRef.current) return { x: 0, y: 0 };
+      const logo = logoStarRef.current.getBoundingClientRect();
+      const phone = phoneRef.current.getBoundingClientRect();
+      const cx = logo.left + logo.width / 2;
+      const cy = logo.top + logo.height / 2;
+      const ex = isMobile ? cx : phone.left + phone.width / 2;
+      const ey = isMobile ? phone.top + 40 : phone.top + 60;
+      const fullDx = ex - cx;
+      const fullDy = ey - cy;
+      const fullLen = Math.hypot(fullDx, fullDy) || 1;
+      const offset = 18;
+      return { x: cx + (fullDx / fullLen) * offset, y: cy + (fullDy / fullLen) * offset };
     }
     positionBeam();
     window.addEventListener("resize", positionBeam, { passive: true });
@@ -94,6 +115,37 @@ function LaunchAnimationInner() {
     const tl = gsap.timeline({ onComplete: finish });
     if (isMobile) tl.timeScale(1.15);
     tlRef.current = tl;
+
+    // Spark burst helper: fires N sparks radially from (cx, cy) at time t,
+    // with per-spark random angle jitter and distance.
+    function burst(t: number, selector: string, getOrigin: () => { x: number; y: number }, distMin: number, distMax: number, fadeIn = 0.2, fadeOut = 0.32) {
+      tl.call(
+        () => {
+          const sparks = document.querySelectorAll<HTMLElement>(selector);
+          if (!sparks.length) return;
+          const { x: cx, y: cy } = getOrigin();
+          sparks.forEach((spark, i, arr) => {
+            const baseAngle = (i / arr.length) * Math.PI * 2;
+            const angle = baseAngle + (Math.random() - 0.5) * 0.4;
+            const distance = distMin + Math.random() * (distMax - distMin);
+            gsap.set(spark, { x: cx, y: cy, opacity: 0, scale: 0.5 });
+            const burstTl = gsap.timeline();
+            burstTl
+              .to(spark, {
+                x: cx + Math.cos(angle) * distance,
+                y: cy + Math.sin(angle) * distance,
+                opacity: 1,
+                scale: 1,
+                duration: fadeIn,
+                ease: "power2.out",
+              })
+              .to(spark, { opacity: 0, scale: 0.3, duration: fadeOut, ease: "power2.in" });
+          });
+        },
+        [],
+        t,
+      );
+    }
 
     tl
       .set(shootingStarRef.current, { x: -100, y: 80, opacity: 1, scale: 1 }, 0.6)
@@ -122,15 +174,33 @@ function LaunchAnimationInner() {
       .to(subRef.current, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 2.85)
       .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 3.05);
 
+    // Sparks: logo impact at 1.3s (when shooting star explodes into logo);
+    // beam ignition at 1.9s (when the line first appears).
+    burst(
+      1.3,
+      "[data-spark='logo']",
+      () => {
+        if (!logoStarRef.current) return { x: 0, y: 0 };
+        const r = logoStarRef.current.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      },
+      26,
+      40,
+      0.22,
+      0.36,
+    );
+    burst(1.9, "[data-spark='beam']", beamOrigin, 14, 24, 0.18, 0.28);
+
     function finish() {
       window.removeEventListener("resize", positionBeam);
-      // Trigger the real Nav and main children to fade in by removing the
-      // launch-pending flag (CSS transition handles the visual fade).
-      // Fire the launch-complete event at the same moment so StarField also
-      // starts its 800ms fade-in. Real elements + real StarField fade in
-      // while overlay/canvas fade out, all crossfading in place.
+      // Trigger real Nav + main fade-in. Set exiting BEFORE removing pending
+      // so the transition rule is in scope when the opacity property changes.
+      document.body.dataset.launchExiting = "1";
       delete document.body.dataset.launchPending;
       window.dispatchEvent(new CustomEvent(LAUNCH_COMPLETE_EVENT));
+      window.setTimeout(() => {
+        delete document.body.dataset.launchExiting;
+      }, 700);
 
       const exitTl = gsap.timeline({
         onComplete: () => {
@@ -148,6 +218,7 @@ function LaunchAnimationInner() {
       window.removeEventListener("resize", positionBeam);
       stopStars();
       delete document.body.dataset.launchPending;
+      delete document.body.dataset.launchExiting;
     };
   }, []);
 
@@ -222,6 +293,20 @@ function LaunchAnimationInner() {
           filter: "blur(0.5px)",
         }}
       />
+
+      {/* Spark dots — 8 for the logo impact, 5 for the beam ignition.
+          Start at opacity 0 off-canvas; positioned + animated by GSAP. */}
+      {Array.from({ length: 13 }).map((_, i) => (
+        <div
+          key={`spark-${i}`}
+          data-spark={i < 8 ? "logo" : "beam"}
+          className="pointer-events-none absolute left-0 top-0 h-[3px] w-[3px] rounded-full opacity-0"
+          style={{
+            background: "#7FC8FF",
+            boxShadow: "0 0 8px 2px rgba(127, 200, 255, 0.85)",
+          }}
+        />
+      ))}
 
       {/* Mirror Hero container exactly. Invisible spacers preserve layout
           where the real Hero has eyebrow chip + italic tagline + secondary
