@@ -144,3 +144,66 @@ Claude Code creates commits per logical change. The convention:
 
 If you want a draft to review before committing, just tell Claude Code:
 "Make this change but don't commit yet."
+
+---
+
+## Phone screenshots
+
+When you have real app screenshots ready, drop them in `public/screenshots/`
+and swap them into the existing `<PhoneMockup>` slots.
+
+### Where to put files
+
+```
+public/screenshots/
+  watchlist.png         used by Hero on the home page
+  pillar-learn.png      Learn pillar mockup (home + /product)
+  pillar-research.png   Research pillar mockup (home + /product)
+  pillar-compete.png    Compete pillar mockup (home + /product)
+```
+
+Recommended source aspect ratio: **9 × 19.5** (e.g. 540 × 1170, 1080 × 2340).
+Anything close works — `object-cover` crops gracefully.
+
+### How to swap
+
+Each phone mockup currently has stylised JSX inside `<PhoneMockup>`. Replace
+that JSX with `<PhoneScreenshot src="..." alt="..." />`.
+
+**Hero (`src/components/sections/Hero.tsx`)**
+
+Replace `<WatchlistScreen />` with:
+
+```tsx
+<PhoneScreenshot src="/screenshots/watchlist.png" alt="StarryTrader Watchlist" priority />
+```
+
+Then delete the `WatchlistScreen` function below it (no longer used). Don't
+forget to import: `import { PhoneScreenshot } from "@/components/decoration/PhoneScreenshot";`.
+
+**Pillars (`src/components/decoration/PillarScreen.tsx`)**
+
+This file has three branches (`learn`, `research`, `compete`). Replace each
+return block with the matching screenshot:
+
+```tsx
+if (pillarId === "learn") return <PhoneScreenshot src="/screenshots/pillar-learn.png" alt="Learn pillar" />;
+if (pillarId === "research") return <PhoneScreenshot src="/screenshots/pillar-research.png" alt="Research pillar" />;
+return <PhoneScreenshot src="/screenshots/pillar-compete.png" alt="Compete pillar" />;
+```
+
+This automatically updates both the home `PillarsTeaser` and the `/product`
+`PillarsPinned` mockups.
+
+**Launch animation (`src/components/launch/LaunchAnimation.tsx`)**
+
+Optional. The `PhoneStandIn` component inside this file paints stylised cards
+during the 3.5s launch sequence. The user only sees it briefly, so swapping
+to a real screenshot is low priority. If you want to: replace the inner
+`<div ref={ref}>` and its children with `<PhoneScreenshot src="/screenshots/watchlist.png" alt="" />`,
+and remove the `data-launch-card` GSAP stagger animation in the timeline.
+
+### Tip
+
+Just tell Claude Code: *"I dropped four screenshots in public/screenshots/.
+Swap them into the Hero and the three pillar mockups."* That's enough.

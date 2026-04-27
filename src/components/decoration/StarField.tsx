@@ -1,18 +1,36 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Star = { x: number; y: number; r: number; depth: 0 | 1 | 2; baseAlpha: number };
 
-const STAR_COUNT = 110;
+const STAR_COUNT = 200;
+
+const LAUNCH_COMPLETE_EVENT = "starry:launch-complete";
 
 /**
  * Three-layer star field rendered on a fixed-position canvas.
  * Subtle parallax follows scroll. Skips animation under prefers-reduced-motion.
- * v4.1: highlight stars use --starry-blue-light instead of gold.
+ *
+ * v4.2 launch coordination: when the LaunchAnimation overlay is in flight
+ * (signalled via `document.body.dataset.launchPending = "1"`), the canvas
+ * starts at opacity 0 and fades to its normal opacity over 800ms once the
+ * `starry:launch-complete` event fires. On repeat session visits the canvas
+ * mounts at normal opacity immediately.
  */
 export function StarField() {
   const ref = useRef<HTMLCanvasElement | null>(null);
+  const [opacity, setOpacity] = useState<number>(() => {
+    if (typeof document === "undefined") return 0.8;
+    return document.body.dataset.launchPending === "1" ? 0 : 0.8;
+  });
+
+  useEffect(() => {
+    if (opacity === 0.8) return;
+    const onComplete = () => setOpacity(0.8);
+    window.addEventListener(LAUNCH_COMPLETE_EVENT, onComplete, { once: true });
+    return () => window.removeEventListener(LAUNCH_COMPLETE_EVENT, onComplete);
+  }, [opacity]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -94,7 +112,11 @@ export function StarField() {
     <canvas
       ref={ref}
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-0 opacity-80"
+      className="pointer-events-none fixed inset-0 z-0"
+      style={{
+        opacity,
+        transition: "opacity 800ms cubic-bezier(0.16, 1, 0.3, 1)",
+      }}
     />
   );
 }
