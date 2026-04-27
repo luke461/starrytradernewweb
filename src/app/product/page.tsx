@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export const metadata: Metadata = {
   title: "What we’re building",
-  description: "Three pillars. One path to financial literacy. Learn, Research, Compete — built around the way Gen Z actually learns.",
+  description: "Three pillars. One path to financial literacy. Learn, Research, Compete. Built around the way Gen Z actually learns.",
 };
 
 export default function ProductPage() {

@@ -80,7 +80,7 @@ export function NsBunkToNus() {
         {[
           { x: 60, y: 110, label: "Singapore", sub: "NS bunk · 2024" },
           { x: 320, y: 90, label: "Singapore", sub: "NUS School of Computing · 2026" },
-          { x: 540, y: 60, label: "—", sub: "Future" },
+          { x: 540, y: 60, label: "·", sub: "Future" },
         ].map((p, i) => (
           <g key={i}>
             <motion.circle
