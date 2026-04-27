@@ -1,0 +1,275 @@
+@import "tailwindcss";
+
+/* =============================================================================
+ * StarryTrader v4.1 design tokens.
+ * Brief Section 1: gold removed; lighter base; light surface palette added.
+ * Verify against starrytrader.com via DevTools before launch.
+ * ===========================================================================*/
+
+@theme {
+  /* Dark base. Lighter than v4.0. */
+  --color-starry-deep: #131A35;
+  --color-starry-mid:  #1F2747;
+  --color-starry-soft: #2A3360;
+
+  /* Light surfaces. NEW. For sections that should breathe. */
+  --color-starry-surface-pale: #F4F6FF;
+  --color-starry-surface-mist: #E4E9FF;
+
+  /* Accents. Purple is the brand; light blue is the new highlight. */
+  --color-starry-violet-deep: #4C3FE0;
+  --color-starry-violet:      #6B5BFF;
+  --color-starry-violet-soft: #9B8FFF;
+  --color-starry-blue-light:  #7FC8FF;
+  --color-starry-blue-soft:   #B8DEFF;
+
+  /* Text. */
+  --color-ink-primary:       #FFFFFF;
+  --color-ink-soft:          #C7CCE6;
+  --color-ink-muted:         #8089AD;
+  --color-ink-on-light:      #1F2747;
+  --color-ink-on-light-soft: #4C5577;
+
+  --color-success-soft: #7AE0B6;
+
+  --font-display: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    var(--font-jet), "JetBrains Mono", ui-monospace, monospace;
+
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Plain custom properties for components that reference brief variable names. */
+:root {
+  --starry-base-deep:    #131A35;
+  --starry-base-mid:     #1F2747;
+  --starry-base-soft:    #2A3360;
+  --starry-surface-pale: #F4F6FF;
+  --starry-surface-mist: #E4E9FF;
+  --starry-violet-deep:  #4C3FE0;
+  --starry-violet:       #6B5BFF;
+  --starry-violet-soft:  #9B8FFF;
+  --starry-blue-light:   #7FC8FF;
+  --starry-blue-soft:    #B8DEFF;
+  --text-primary:        #FFFFFF;
+  --text-soft:           #C7CCE6;
+  --text-muted:          #8089AD;
+  --text-on-light:       #1F2747;
+  --text-on-light-soft:  #4C5577;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--starry-base-deep);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.55;
+    background: var(--starry-base-deep);
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
+
+  @media (max-width: 768px) {
+    body { font-size: 16px; }
+  }
+
+  ::selection {
+    background: rgba(127, 200, 255, 0.30);
+    color: var(--text-primary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--starry-blue-light);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  /* Prose for blog post bodies (dark surface). */
+  .prose {
+    color: var(--text-soft);
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    margin-top: 2em;
+    margin-bottom: 0.6em;
+    line-height: 1.15;
+  }
+  .prose h2 { font-size: 32px; font-weight: 700; }
+  .prose h3 { font-size: 24px; font-weight: 600; }
+  .prose p  { margin-bottom: 1.2em; }
+  .prose a  { color: var(--starry-blue-light); text-decoration: underline; text-underline-offset: 3px; }
+  .prose strong { color: var(--text-primary); font-weight: 600; }
+  .prose ul, .prose ol { margin: 1.2em 0; padding-left: 1.5em; }
+  .prose ul { list-style: disc; }
+  .prose ol { list-style: decimal; }
+  .prose li { margin-bottom: 0.4em; }
+  .prose blockquote {
+    border-left: 3px solid var(--starry-blue-light);
+    padding-left: 1.2em;
+    margin: 1.6em 0;
+    font-style: italic;
+    color: var(--text-soft);
+  }
+
+  /* Prose for light-surface sections. */
+  .prose-light {
+    color: var(--text-on-light-soft);
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .prose-light h1, .prose-light h2, .prose-light h3 {
+    color: var(--text-on-light);
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    margin-top: 2em;
+    margin-bottom: 0.6em;
+    line-height: 1.15;
+  }
+  .prose-light p { margin-bottom: 1.2em; }
+  .prose-light a { color: var(--starry-violet-deep); text-decoration: underline; text-underline-offset: 3px; }
+  .prose-light strong { color: var(--text-on-light); font-weight: 600; }
+}
+
+/* =============================================================================
+ * Type scale. Brief Section 5 (preserved).
+ * ===========================================================================*/
+@utility text-hero {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 8.5vw, 96px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+}
+@utility text-section {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+@utility text-sub {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+@utility text-body-lg { font-size: 20px; line-height: 1.55; }
+@utility text-body-md { font-size: 17px; line-height: 1.55; }
+@utility text-caption { font-size: 14px; line-height: 1.5; }
+
+/* =============================================================================
+ * Surface gradients. Purple-led.
+ * ===========================================================================*/
+@utility bg-hero-cosmic {
+  background:
+    radial-gradient(ellipse 70% 60% at 18% 18%, rgba(107, 91, 255, 0.28), transparent 62%),
+    radial-gradient(ellipse 55% 45% at 82% 28%, rgba(127, 200, 255, 0.16), transparent 65%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(42, 51, 96, 0.6), transparent 70%),
+    linear-gradient(180deg, #131A35 0%, #1A2143 60%, #131A35 100%);
+}
+
+@utility bg-section-fade {
+  background: linear-gradient(90deg, var(--starry-base-mid) 0%, var(--starry-base-soft) 50%, var(--starry-base-mid) 100%);
+}
+
+@utility bg-light-pale {
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 0%, rgba(155, 143, 255, 0.10), transparent 65%),
+    radial-gradient(ellipse 50% 40% at 10% 100%, rgba(127, 200, 255, 0.10), transparent 65%),
+    var(--starry-surface-pale);
+  color: var(--text-on-light);
+}
+
+@utility bg-light-mist {
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 10%, rgba(127, 200, 255, 0.14), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 90% 90%, rgba(155, 143, 255, 0.10), transparent 65%),
+    var(--starry-surface-mist);
+  color: var(--text-on-light);
+}
+
+/* =============================================================================
+ * CTA. Solid violet-deep, white text. Hover lifts to violet. Active ring blue.
+ * Names kept (`bg-cta-pill`/-hover) so existing call sites still resolve.
+ * ===========================================================================*/
+@utility bg-cta-pill {
+  background: var(--starry-violet-deep);
+  color: var(--text-primary);
+  transition: background 240ms var(--ease-cinematic),
+              box-shadow 240ms var(--ease-cinematic),
+              transform 200ms var(--ease-cinematic);
+  box-shadow: 0 8px 24px -8px rgba(76, 63, 224, 0.55);
+}
+@utility bg-cta-pill-hover {
+  background: var(--starry-violet);
+  box-shadow: 0 12px 30px -10px rgba(107, 91, 255, 0.65),
+              0 0 0 3px rgba(127, 200, 255, 0.25);
+}
+
+/* =============================================================================
+ * Cards. Two surface contexts.
+ * ===========================================================================*/
+@utility surface-card {
+  background: var(--starry-base-mid);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 32px;
+  transition: transform 280ms var(--ease-cinematic),
+              box-shadow 280ms var(--ease-cinematic),
+              border-color 280ms var(--ease-cinematic);
+}
+@utility surface-card-light {
+  background: #FFFFFF;
+  border: 1px solid rgba(155, 143, 255, 0.20);
+  border-radius: 20px;
+  padding: 32px;
+  color: var(--text-on-light);
+  box-shadow: 0 16px 40px -24px rgba(31, 39, 71, 0.18),
+              0 1px 2px rgba(31, 39, 71, 0.04);
+  transition: transform 280ms var(--ease-cinematic),
+              box-shadow 280ms var(--ease-cinematic),
+              border-color 280ms var(--ease-cinematic);
+}
+
+/* Subtle dot-grain overlay (used on hero). */
+@utility grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 1px, transparent 0);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* Cursor follow glow (set up by CursorFollow.tsx). */
+.cursor-follow-target { position: relative; }
+
+/* Reduced motion. Universal disable. Brief Section 8 + a11y rule severity High. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
