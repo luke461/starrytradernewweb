@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { PhoneMockup } from "@/components/decoration/PhoneMockup";
 import { Sparkle } from "@/components/decoration/Sparkle";
@@ -7,7 +8,7 @@ import { useUi } from "@/components/providers/UiProvider";
 import { hero } from "@/content/home";
 
 export function Hero() {
-  const { openContact, openDemo } = useUi();
+  const { openContact } = useUi();
 
   return (
     <section className="relative overflow-hidden">
@@ -31,16 +32,16 @@ export function Hero() {
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Button variant="primary" size="lg" onClick={openContact}>
+              <Button variant="primary" size="lg" onClick={openContact} magnetic>
                 Get in touch
               </Button>
-              <button
-                onClick={() => openDemo(0)}
+              <Link
+                href="/product"
                 className="group inline-flex items-center gap-1.5 text-[15px] text-ink-soft transition-colors hover:text-ink-primary"
               >
-                See the product
+                See what we’re building
                 <span aria-hidden className="transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">→</span>
-              </button>
+              </Link>
             </div>
 
             <Sparkle tone="violet" size={28} className="absolute -left-6 top-32 hidden md:block" />

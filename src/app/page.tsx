@@ -1,30 +1,38 @@
 import { Hero } from "@/components/sections/Hero";
-import { ProblemStats } from "@/components/sections/ProblemStats";
-import { Pillars } from "@/components/sections/Pillars";
-import { StatsBand } from "@/components/sections/StatsBand";
-import { ProductDemo } from "@/components/sections/ProductDemo";
-import { Reviews } from "@/components/sections/Reviews";
-import { Partners } from "@/components/sections/Partners";
-import { Awards } from "@/components/sections/Awards";
-import { Press } from "@/components/sections/Press";
-import { TeamGrid } from "@/components/sections/TeamGrid";
-import { BlogPreview } from "@/components/sections/BlogPreview";
+import { PillarsTeaser } from "@/components/sections/PillarsTeaser";
+import { ResearchTeaser } from "@/components/sections/ResearchTeaser";
+import { PressTeaser } from "@/components/sections/PressTeaser";
+import { TeamTeaser } from "@/components/sections/TeamTeaser";
 import { FinalCta } from "@/components/sections/FinalCta";
+import { WaveDivider } from "@/components/decoration/WaveDivider";
 
+/**
+ * v4.1 home page. Curated overview that teases each deep-dive route.
+ * Section pattern (brief Section 1):
+ *   Hero (dark) → Pillars teaser (light) → Stats (dark) →
+ *   Press teaser (light) → Team teaser (dark) → Final CTA (light)
+ */
 export default function Home() {
   return (
     <>
       <Hero />
-      <ProblemStats />
-      <Pillars />
-      <StatsBand />
-      <ProductDemo />
-      <Reviews />
-      <Partners />
-      <Awards />
-      <Press />
-      <TeamGrid />
-      <BlogPreview />
+
+      <WaveDivider to="pale" />
+      <div className="bg-light-pale">
+        <PillarsTeaser />
+      </div>
+      <WaveDivider to="deep" direction="up" />
+
+      <ResearchTeaser />
+
+      <WaveDivider to="mist" />
+      <div className="bg-light-mist">
+        <PressTeaser />
+      </div>
+      <WaveDivider to="deep" direction="up" />
+
+      <TeamTeaser />
+
       <FinalCta />
     </>
   );

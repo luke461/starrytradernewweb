@@ -1,20 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { useUi } from "@/components/providers/UiProvider";
 
 const links = [
-  { href: "/#capabilities", label: "What we’re building" },
-  { href: "/#research", label: "The research" },
-  { href: "/#press", label: "Press" },
-  { href: "/#team", label: "Team" },
+  { href: "/product", label: "What we’re building" },
+  { href: "/research", label: "The research" },
+  { href: "/press", label: "Press" },
+  { href: "/team", label: "Team" },
   { href: "/blog", label: "Blog" },
 ];
 
 export function Nav() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { openContact, openDemo } = useUi();
@@ -26,6 +28,16 @@ export function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close mobile menu on route change.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  function isActive(href: string) {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+
   return (
     <header
       className={`sticky top-0 z-40 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
@@ -36,15 +48,27 @@ export function Nav() {
         <Logo size={28} />
 
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="text-[14px] text-ink-soft transition-colors duration-200 hover:text-ink-primary"
-            >
-              {l.label}
-            </Link>
-          ))}
+          {links.map((l) => {
+            const active = isActive(l.href);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={active ? "page" : undefined}
+                className={`relative text-[14px] transition-colors duration-200 ${
+                  active ? "text-ink-primary" : "text-ink-soft hover:text-ink-primary"
+                }`}
+              >
+                {l.label}
+                {active && (
+                  <span
+                    aria-hidden
+                    className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full bg-starry-blue-light"
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="hidden items-center gap-4 lg:flex">
@@ -55,7 +79,7 @@ export function Nav() {
             See the product
             <span aria-hidden className="inline-block transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/sec:translate-x-1">→</span>
           </button>
-          <Button variant="primary" size="md" onClick={openContact}>
+          <Button variant="primary" size="md" onClick={openContact} magnetic>
             Get in touch
           </Button>
         </div>
@@ -75,16 +99,20 @@ export function Nav() {
       {open && (
         <div className="border-t border-white/[0.06] bg-starry-deep/95 backdrop-blur-xl lg:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-4">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-3 text-[15px] text-ink-soft hover:bg-white/5 hover:text-ink-primary"
-              >
-                {l.label}
-              </Link>
-            ))}
+            {links.map((l) => {
+              const active = isActive(l.href);
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className={`rounded-lg px-3 py-3 text-[15px] ${
+                    active ? "bg-white/[0.04] text-ink-primary" : "text-ink-soft hover:bg-white/5 hover:text-ink-primary"
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
             <div className="mt-3 flex flex-col gap-2 border-t border-white/5 pt-4">
               <button
                 onClick={() => { setOpen(false); openDemo(0); }}
