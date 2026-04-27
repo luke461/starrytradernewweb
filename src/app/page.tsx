@@ -5,6 +5,7 @@ import { PressTeaser } from "@/components/sections/PressTeaser";
 import { TeamTeaser } from "@/components/sections/TeamTeaser";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { WaveDivider } from "@/components/decoration/WaveDivider";
+import { LaunchAnimation } from "@/components/launch/LaunchAnimation";
 
 /**
  * v4.1 home page. Curated overview that teases each deep-dive route.
@@ -15,6 +16,7 @@ import { WaveDivider } from "@/components/decoration/WaveDivider";
 export default function Home() {
   return (
     <>
+      <LaunchAnimation />
       <Hero />
 
       <WaveDivider to="pale" />
