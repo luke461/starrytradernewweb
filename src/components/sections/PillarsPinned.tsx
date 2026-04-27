@@ -34,19 +34,20 @@ export function PillarsPinned() {
   useGSAP(
     () => {
       if (!enabled || !containerRef.current) return;
-      const texts = gsap.utils.toArray<HTMLElement>("[data-pillar-text]");
-      const phones = gsap.utils.toArray<HTMLElement>("[data-pillar-phone]");
+      const root = containerRef.current;
+      const texts = gsap.utils.toArray<HTMLElement>("[data-pillar-text]", root);
+      const phones = gsap.utils.toArray<HTMLElement>("[data-pillar-phone]", root);
 
       gsap.set(texts.slice(1), { opacity: 0, y: 24 });
       gsap.set(phones.slice(1), { opacity: 0, scale: 0.96 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: containerRef.current,
+          trigger: root,
           start: "top top",
-          end: "+=240%",
-          pin: true,
+          end: "bottom bottom",
           scrub: 0.8,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             const idx = Math.min(2, Math.floor(self.progress * 3));
             setActive(idx);
@@ -63,6 +64,9 @@ export function PillarsPinned() {
         .to(texts[2], { opacity: 1, y: 0, duration: 1 }, 2.6)
         .to(phones[2], { opacity: 1, scale: 1, duration: 1 }, 2.6);
 
+      // Layout above us (hero) hydrates after we mount; recompute pin math.
+      ScrollTrigger.refresh();
+
       return () => {
         ScrollTrigger.getAll().forEach((t) => t.kill());
       };
@@ -72,21 +76,26 @@ export function PillarsPinned() {
 
   if (!enabled) {
     // Mobile / reduced-motion fallback: use the existing stacked Pillars.
-    // Imported lazily so we don't ship the GSAP timeline weight needlessly.
     return <FallbackPillars />;
   }
 
+  // Architecture: explicit 320vh section creates real document space for the
+  // pin window. The inner div uses CSS `position: sticky` so the browser
+  // handles the pinning visually. ScrollTrigger only scrubs the timeline
+  // progress; it never touches positioning. This sidesteps GSAP's
+  // pin-spacer behavior, which can race with hydration when the component
+  // swaps from FallbackPillars to the pinned layout on enable.
   return (
-    <section ref={containerRef} className="relative h-screen">
-      <div className="relative h-full">
+    <section ref={containerRef} className="relative" style={{ height: "320vh" }}>
+      <div className="sticky top-0 h-screen overflow-hidden">
         <div className="mx-auto grid h-full max-w-7xl grid-cols-[1.05fr_0.95fr] items-center gap-12 px-8">
-          <div className="relative">
+          <div className="relative h-full">
             <ProgressDots count={3} active={active} />
             {pillars.map((p, i) => (
               <div
                 key={p.id}
                 data-pillar-text
-                className={`absolute inset-y-0 left-0 right-0 flex flex-col justify-center ${i === 0 ? "" : ""}`}
+                className="absolute inset-y-0 left-0 right-0 flex flex-col justify-center"
                 style={{ opacity: i === 0 ? 1 : 0 }}
               >
                 <PillarText pillar={p} />
