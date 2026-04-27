@@ -8,12 +8,16 @@ import { useFirstVisit } from "@/lib/useFirstVisit";
 const LAUNCH_COMPLETE_EVENT = "starry:launch-complete";
 
 /**
- * One-shot launch animation per the v4.2 brief (refined).
+ * One-shot launch animation per the v4.2 brief (refined twice).
  * - Mounts only on the first session visit to `/`.
- * - Skipped entirely under prefers-reduced-motion.
- * - Sets `document.body.dataset.launchPending = "1"` on mount so other
- *   components (like the global StarField) can defer themselves until the
- *   `starry:launch-complete` event fires.
+ * - Skipped under prefers-reduced-motion.
+ * - Sets body[data-launch-pending="1"] so a CSS rule in globals.css hides
+ *   the real Nav and the non-overlay children of <main> until exit start.
+ *   At exit start the attribute is removed; the real elements fade back in
+ *   over 600ms via the same CSS transition while the overlay fades out.
+ * - Stand-in markup mirrors the real Nav header and Hero container
+ *   exactly (same max-w-7xl, paddings, grid columns, max-widths) so the
+ *   crossfade lands on the right pixels.
  */
 export function LaunchAnimation() {
   const isFirst = useFirstVisit();
@@ -37,8 +41,6 @@ function LaunchAnimationInner() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    // Tell other components a launch is in flight so they can defer themselves
-    // (StarField uses this to render at opacity 0 until the complete event).
     document.body.dataset.launchPending = "1";
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -52,7 +54,6 @@ function LaunchAnimationInner() {
 
     const stopStars = setupStarfield(canvasRef.current, isMobile);
 
-    // Initial states
     gsap.set(logoStarRef.current, { opacity: 0, scale: 0.5, transformOrigin: "center" });
     gsap.set(wordmarkRef.current, { opacity: 0, x: -10 });
     gsap.set(phoneRef.current, { opacity: 0, scale: 0.85, transformOrigin: "center" });
@@ -123,16 +124,17 @@ function LaunchAnimationInner() {
 
     function finish() {
       window.removeEventListener("resize", positionBeam);
-      // Coordinated 800ms exit:
-      //   - Launch canvas stars dissolve over 600ms starting immediately
-      //   - Overlay bg fades over 500ms starting at +300ms
-      //   - The real StarField (listening for `starry:launch-complete`) starts
-      //     fading in 800ms after the event, which roughly mirrors the bg fade.
+      // Trigger the real Nav and main children to fade in by removing the
+      // launch-pending flag (CSS transition handles the visual fade).
+      // Fire the launch-complete event at the same moment so StarField also
+      // starts its 800ms fade-in. Real elements + real StarField fade in
+      // while overlay/canvas fade out, all crossfading in place.
+      delete document.body.dataset.launchPending;
+      window.dispatchEvent(new CustomEvent(LAUNCH_COMPLETE_EVENT));
+
       const exitTl = gsap.timeline({
         onComplete: () => {
           stopStars();
-          delete document.body.dataset.launchPending;
-          window.dispatchEvent(new CustomEvent(LAUNCH_COMPLETE_EVENT));
           setDone(true);
         },
       });
@@ -152,30 +154,41 @@ function LaunchAnimationInner() {
   if (done) return null;
 
   return (
-    <div ref={overlayRef} aria-hidden className="fixed inset-0 z-50 overflow-hidden bg-starry-deep">
+    <div
+      ref={overlayRef}
+      data-launch-overlay
+      aria-hidden
+      className="fixed inset-0 z-50 overflow-hidden bg-starry-deep"
+    >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
-      {/* Logo — real image, mirrors Nav.Logo position. */}
-      <div className="pointer-events-none absolute left-5 top-[18px] flex items-center gap-3 md:left-8">
-        <div ref={logoStarRef} className="h-7 w-7">
-          <Image
-            src="/brand/starrytrader-logo-light.png"
-            alt=""
-            width={28}
-            height={28}
-            priority
-            className="h-full w-full object-contain"
-            style={{ filter: "drop-shadow(0 0 12px rgba(127, 200, 255, 0.6))" }}
-          />
+      {/* Mirror Nav header so the logo + wordmark sit at the same pixels as
+          the real Nav.Logo, regardless of viewport width. */}
+      <div className="absolute inset-x-0 top-0">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 md:px-8">
+          <span className="inline-flex items-center gap-3">
+            <div ref={logoStarRef} className="flex h-7 w-7 items-center">
+              <Image
+                src="/brand/starrytrader-logo-light.png"
+                alt=""
+                width={28}
+                height={28}
+                priority
+                className="h-7 w-auto"
+                style={{ filter: "drop-shadow(0 0 12px rgba(127, 200, 255, 0.6))" }}
+              />
+            </div>
+            <span
+              ref={wordmarkRef}
+              className="font-display text-[18px] font-semibold tracking-tight text-ink-primary"
+            >
+              StarryTrader
+            </span>
+          </span>
         </div>
-        <span
-          ref={wordmarkRef}
-          className="font-display text-[18px] font-semibold tracking-tight text-ink-primary"
-        >
-          StarryTrader
-        </span>
       </div>
 
+      {/* Shooting star: small dot with trailing gradient. */}
       <div
         ref={shootingStarRef}
         className="pointer-events-none absolute left-0 top-0"
@@ -199,6 +212,7 @@ function LaunchAnimationInner() {
         />
       </div>
 
+      {/* Beam: 1px tall gradient line. Position + rotation set in JS. */}
       <div
         ref={beamRef}
         className="pointer-events-none absolute"
@@ -209,24 +223,51 @@ function LaunchAnimationInner() {
         }}
       />
 
-      <div className="relative mx-auto flex h-full max-w-7xl items-center px-5 pt-20 md:px-8 md:pt-28 lg:pt-36">
-        <div className="grid w-full grid-cols-1 items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="flex flex-col">
+      {/* Mirror Hero container exactly. Invisible spacers preserve layout
+          where the real Hero has eyebrow chip + italic tagline + secondary
+          CTA, so the animated h1 / sub / primary CTA / phone all land on
+          the same pixels as the real elements they crossfade with. */}
+      <div className="relative mx-auto max-w-7xl px-5 pb-24 pt-20 md:px-8 md:pt-28 lg:pt-36">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+          <div className="relative max-w-2xl">
+            {/* Eyebrow chip spacer (real chip ~30px tall + mb-5 = 20px). */}
+            <p
+              aria-hidden
+              className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-starry-blue-light opacity-0"
+            >
+              Capability showcase
+            </p>
             <h1 ref={headlineRef} className="text-hero text-balance text-ink-primary">
               Investing, explained.
             </h1>
-            <p ref={subRef} className="mt-7 max-w-xl text-body-lg text-ink-soft">
-              StarryTrader teaches Gen Z how markets actually work. Without the shame, without the hype.
+            {/* Italic tagline spacer. */}
+            <p
+              aria-hidden
+              className="mt-4 max-w-xl text-sub italic text-ink-soft opacity-0"
+            >
+              An education platform for the generation finance forgot.
             </p>
-            <div ref={ctaRef} className="mt-9">
+            <p
+              ref={subRef}
+              className="mt-7 max-w-xl text-body-lg text-ink-soft"
+            >
+              StarryTrader teaches Gen Z how markets actually work. Without the shame, without the hype, without the trading-app gamification that got them burned in the first place. Built on peer-reviewed research. Designed for the way they actually learn.
+            </p>
+            <div ref={ctaRef} className="mt-9 flex flex-wrap items-center gap-4">
               <span className="inline-flex h-12 items-center rounded-full bg-starry-violet-deep px-6 text-[16px] font-medium text-white shadow-[0_8px_24px_-8px_rgba(76,63,224,0.55)]">
                 Get in touch
+              </span>
+              {/* Secondary CTA spacer. */}
+              <span aria-hidden className="inline-flex items-center gap-1.5 text-[15px] text-ink-soft opacity-0">
+                See what we’re building →
               </span>
             </div>
           </div>
 
-          <div ref={phoneRef} className="relative mx-auto">
-            <PhoneStandIn ref={phoneScreenRef} />
+          <div className="relative flex items-center justify-center">
+            <div ref={phoneRef} className="relative">
+              <PhoneStandIn ref={phoneScreenRef} />
+            </div>
           </div>
         </div>
       </div>
@@ -235,8 +276,9 @@ function LaunchAnimationInner() {
 }
 
 const PhoneStandIn = ({ ref }: { ref: React.RefObject<HTMLDivElement | null> }) => (
+  // Match real PhoneMockup widths: w-[280px] sm:w-[320px] md:w-[300px] lg:w-[340px]
   <div
-    className="relative w-[260px] sm:w-[280px]"
+    className="relative w-[280px] sm:w-[320px] md:w-[300px] lg:w-[340px]"
     style={{ filter: "drop-shadow(0 40px 80px rgba(76, 63, 224, 0.25))" }}
   >
     <div className="relative aspect-[9/19.5] rounded-[42px] border border-white/15 bg-gradient-to-b from-starry-soft to-starry-deep p-2.5">

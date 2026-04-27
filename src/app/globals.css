@@ -264,6 +264,30 @@
 /* Cursor follow glow (set up by CursorFollow.tsx). */
 .cursor-follow-target { position: relative; }
 
+/* =============================================================================
+ * Launch animation coordination (v4.2).
+ * While body[data-launch-pending="1"] is set, the real Nav header and the
+ * non-overlay children of <main> are hidden under the overlay. When the
+ * launch animation removes the attribute at exit start, both fade back in
+ * over 600ms — synchronised with the overlay's own fade-out so stand-ins
+ * and real elements crossfade in place.
+ *
+ * The transition rule lives on the elements unconditionally so the fade
+ * fires both directions. CSS transitions only run when watched properties
+ * change, so this is inert on every other page.
+ * ===========================================================================*/
+header,
+main > :not([data-launch-overlay]) {
+  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+body[data-launch-pending="1"] header,
+body[data-launch-pending="1"] main > :not([data-launch-overlay]) {
+  opacity: 0;
+}
+body[data-launch-pending="1"] {
+  overflow: hidden;
+}
+
 /* Reduced motion. Universal disable. Brief Section 8 + a11y rule severity High. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
