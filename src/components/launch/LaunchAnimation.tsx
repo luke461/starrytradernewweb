@@ -29,8 +29,9 @@ function LaunchAnimationInner() {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const shootingStarRef = useRef<HTMLDivElement | null>(null);
-  const logoStarRef = useRef<HTMLDivElement | null>(null);
+  const logoStarRef = useRef<HTMLSpanElement | null>(null);
   const wordmarkRef = useRef<HTMLSpanElement | null>(null);
+  const brandGroupRef = useRef<HTMLSpanElement | null>(null);
   const beamRef = useRef<HTMLDivElement | null>(null);
   const phoneRef = useRef<HTMLDivElement | null>(null);
   const phoneScreenRef = useRef<HTMLDivElement | null>(null);
@@ -64,44 +65,28 @@ function LaunchAnimationInner() {
       gsap.set(phoneScreenRef.current.querySelectorAll("[data-launch-card]"), { opacity: 0, y: 6 });
     }
 
-    // Beam origin is offset OUT of the logo glyph by ~18px (logo radius + a
-    // small gap) along the beam direction so it doesn't paint through the
-    // logo on its way to the phone. Length is reduced by the same offset.
+    // Beam origin is the BOTTOM-RIGHT of the entire brand group (logo glyph
+    // + "StarryTrader" wordmark) plus a small gap. This guarantees the beam
+    // never crosses the bounding box of the brand text — important because
+    // the wordmark has no solid background, so a beam that crossed its area
+    // would show through the spaces between letters.
     function positionBeam() {
-      if (!logoStarRef.current || !phoneRef.current || !beamRef.current) return;
-      const logo = logoStarRef.current.getBoundingClientRect();
+      if (!brandGroupRef.current || !phoneRef.current || !beamRef.current) return;
+      const brand = brandGroupRef.current.getBoundingClientRect();
       const phone = phoneRef.current.getBoundingClientRect();
-      const cx = logo.left + logo.width / 2;
-      const cy = logo.top + logo.height / 2;
-      const ex = isMobile ? cx : phone.left + phone.width / 2;
+      const sx = brand.right + 8;
+      const sy = brand.bottom + 4;
+      const ex = isMobile ? sx : phone.left + phone.width / 2;
       const ey = isMobile ? phone.top + 40 : phone.top + 60;
-      const fullDx = ex - cx;
-      const fullDy = ey - cy;
-      const fullLen = Math.hypot(fullDx, fullDy) || 1;
-      const offset = 18;
-      const sx = cx + (fullDx / fullLen) * offset;
-      const sy = cy + (fullDy / fullLen) * offset;
-      const len = Math.max(0, fullLen - offset);
-      const angle = (Math.atan2(fullDy, fullDx) * 180) / Math.PI;
+      const dx = ex - sx;
+      const dy = ey - sy;
+      const len = Math.hypot(dx, dy);
+      const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
       const el = beamRef.current;
       el.style.left = `${sx}px`;
       el.style.top = `${sy}px`;
       el.style.width = `${len}px`;
       el.style.transform = `rotate(${angle}deg) scaleX(0)`;
-    }
-    function beamOrigin() {
-      if (!logoStarRef.current || !phoneRef.current) return { x: 0, y: 0 };
-      const logo = logoStarRef.current.getBoundingClientRect();
-      const phone = phoneRef.current.getBoundingClientRect();
-      const cx = logo.left + logo.width / 2;
-      const cy = logo.top + logo.height / 2;
-      const ex = isMobile ? cx : phone.left + phone.width / 2;
-      const ey = isMobile ? phone.top + 40 : phone.top + 60;
-      const fullDx = ex - cx;
-      const fullDy = ey - cy;
-      const fullLen = Math.hypot(fullDx, fullDy) || 1;
-      const offset = 18;
-      return { x: cx + (fullDx / fullLen) * offset, y: cy + (fullDy / fullLen) * offset };
     }
     positionBeam();
     window.addEventListener("resize", positionBeam, { passive: true });
@@ -245,22 +230,25 @@ function LaunchAnimationInner() {
         }}
       />
 
-      {/* Mirror Nav header. Painted AFTER the beam so logo + wordmark stay
-          visually clean. */}
+      {/* Mirror Nav header. Logo image is a direct child of the inline-flex
+          (no wrapping div with width constraint) so it renders at the same
+          natural width as the real Nav.Logo — preventing the wordmark shift
+          on the launch -> real handoff. The brand group span is what the
+          beam math anchors to. */}
       <div className="absolute inset-x-0 top-0">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 md:px-8">
-          <span className="inline-flex items-center gap-3">
-            <div ref={logoStarRef} className="flex h-7 w-7 items-center">
+          <span ref={brandGroupRef} className="inline-flex items-center gap-3">
+            <span ref={logoStarRef} className="inline-flex" style={{ filter: "drop-shadow(0 0 12px rgba(127, 200, 255, 0.6))" }}>
               <Image
                 src="/brand/starrytrader-logo-light.png"
                 alt=""
                 width={28}
                 height={28}
                 priority
-                className="h-7 w-auto"
-                style={{ filter: "drop-shadow(0 0 12px rgba(127, 200, 255, 0.6))" }}
+                className="h-auto w-auto"
+                style={{ height: 28, width: "auto" }}
               />
-            </div>
+            </span>
             <span
               ref={wordmarkRef}
               className="font-display text-[18px] font-semibold tracking-tight text-ink-primary"
