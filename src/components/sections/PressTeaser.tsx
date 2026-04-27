@@ -21,7 +21,13 @@ export function PressTeaser() {
           />
         </Reveal>
 
-        <div className="relative mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Reveal delay={0.05}>
+          <div className="mt-10 hidden justify-center lg:flex">
+            <AnimatedConnector label="Singapore ↔ Chicago" surface="light" />
+          </div>
+        </Reveal>
+
+        <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
           {press.map((p, i) => (
             <Reveal key={p.publication} delay={i * 0.1}>
               <Card surface="light" interactive className="h-full">
@@ -45,10 +51,6 @@ export function PressTeaser() {
               </Card>
             </Reveal>
           ))}
-
-          <div className="hidden lg:flex pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 items-center justify-center">
-            <AnimatedConnector label="Singapore ↔ Chicago" surface="light" />
-          </div>
         </div>
 
         <Reveal delay={0.2}>

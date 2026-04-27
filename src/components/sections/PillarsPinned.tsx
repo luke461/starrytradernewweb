@@ -77,8 +77,8 @@ export function PillarsPinned() {
   }
 
   return (
-    <section className="relative h-screen overflow-hidden">
-      <div ref={containerRef} className="relative h-screen">
+    <section ref={containerRef} className="relative h-screen">
+      <div className="relative h-full">
         <div className="mx-auto grid h-full max-w-7xl grid-cols-[1.05fr_0.95fr] items-center gap-12 px-8">
           <div className="relative">
             <ProgressDots count={3} active={active} />
@@ -133,23 +133,23 @@ function PillarText({ pillar }: { pillar: Pillar }) {
   return (
     <div className="max-w-xl">
       <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-blue-light">Pillar {pillar.index}</p>
-      <h3 className="mt-3 text-section text-balance text-ink-primary">{pillar.title}</h3>
+      <h3 className="mt-3 text-sub text-balance text-ink-primary">{pillar.title}</h3>
 
-      <Card className="mt-7 !p-6 !bg-starry-deep/60" glow="violet">
+      <Card className="mt-5 !p-5 !bg-starry-deep/60" glow="violet">
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted">Research insight</p>
-        <p className="mt-2 text-body italic text-ink-soft">“{pillar.insight.quote}”</p>
+        <p className="mt-2 text-[14.5px] italic leading-snug text-ink-soft">“{pillar.insight.quote}”</p>
         <p className="mt-2 font-mono text-caption text-ink-muted">{pillar.insight.source}</p>
       </Card>
 
-      <p className="mt-7 text-sub text-ink-primary">{pillar.headline}</p>
+      <p className="mt-5 font-display text-[20px] font-semibold leading-snug text-ink-primary">{pillar.headline}</p>
 
-      <ul className="mt-6 space-y-3">
-        {pillar.capabilities.slice(0, 4).map((c) => (
-          <li key={c.name} className="flex gap-4">
+      <ul className="mt-4 space-y-2.5">
+        {pillar.capabilities.slice(0, 3).map((c) => (
+          <li key={c.name} className="flex gap-3">
             <span aria-hidden className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-starry-blue-light" />
             <div>
-              <p className="text-[15px] font-semibold text-ink-primary">{c.name}</p>
-              <p className="mt-1 text-[14px] leading-relaxed text-ink-soft">{c.description}</p>
+              <p className="text-[14px] font-semibold text-ink-primary">{c.name}</p>
+              <p className="mt-0.5 text-[13px] leading-snug text-ink-soft">{c.description}</p>
             </div>
           </li>
         ))}
