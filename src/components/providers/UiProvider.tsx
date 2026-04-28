@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
-import { ContactModal } from "@/components/ui/ContactModal";
+import { ContactModal, type ContactAudience } from "@/components/ui/ContactModal";
 import { DemoModal } from "@/components/ui/DemoModal";
 
 type UiState = {
-  openContact: () => void;
+  openContact: (audience?: ContactAudience) => void;
   closeContact: () => void;
   openDemo: (chapter?: number) => void;
   closeDemo: () => void;
@@ -14,11 +14,11 @@ type UiState = {
 const UiCtx = createContext<UiState | null>(null);
 
 export function UiProvider({ children }: { children: ReactNode }) {
-  const [contactOpen, setContactOpen] = useState(false);
+  const [contactState, setContactState] = useState<{ open: boolean; audience: ContactAudience }>({ open: false, audience: "general" });
   const [demoState, setDemoState] = useState<{ open: boolean; chapter: number }>({ open: false, chapter: 0 });
 
-  const openContact = useCallback(() => setContactOpen(true), []);
-  const closeContact = useCallback(() => setContactOpen(false), []);
+  const openContact = useCallback((audience: ContactAudience = "general") => setContactState({ open: true, audience }), []);
+  const closeContact = useCallback(() => setContactState((s) => ({ ...s, open: false })), []);
   const openDemo = useCallback((chapter = 0) => setDemoState({ open: true, chapter }), []);
   const closeDemo = useCallback(() => setDemoState((s) => ({ ...s, open: false })), []);
 
@@ -27,7 +27,7 @@ export function UiProvider({ children }: { children: ReactNode }) {
   return (
     <UiCtx.Provider value={value}>
       {children}
-      <ContactModal open={contactOpen} onClose={closeContact} />
+      <ContactModal open={contactState.open} initialAudience={contactState.audience} onClose={closeContact} />
       <DemoModal open={demoState.open} chapter={demoState.chapter} onClose={closeDemo} />
     </UiCtx.Provider>
   );

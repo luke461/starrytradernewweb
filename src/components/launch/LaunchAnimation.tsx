@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { useFirstVisit } from "@/lib/useFirstVisit";
 
@@ -208,12 +209,18 @@ function LaunchAnimationInner() {
 
   if (done) return null;
 
-  return (
+  // Portal the overlay to document.body so its z-index lives in the root
+  // stacking context. Inside <main className="relative z-10">, even z-50
+  // is bounded by main's stacking context, which means Nav (sibling of
+  // main, z-40 in root) renders ABOVE the overlay. That caused the real
+  // wordmark to overlap the animated one during the exit crossfade.
+  // Portalling fixes it permanently — overlay is now genuinely on top.
+  return createPortal(
     <div
       ref={overlayRef}
       data-launch-overlay
       aria-hidden
-      className="fixed inset-0 z-50 overflow-hidden bg-starry-deep"
+      className="fixed inset-0 z-[60] overflow-hidden bg-starry-deep"
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
@@ -297,34 +304,20 @@ function LaunchAnimationInner() {
       ))}
 
       {/* Mirror Hero container exactly. Invisible spacers preserve layout
-          where the real Hero has eyebrow chip + italic tagline + secondary
-          CTA, so the animated h1 / sub / primary CTA / phone all land on
-          the same pixels as the real elements they crossfade with. */}
-      <div className="relative mx-auto max-w-7xl px-5 pb-24 pt-20 md:px-8 md:pt-28 lg:pt-36">
+          where the real Hero has italic tagline + secondary CTA, so the
+          animated h1 / sub / primary CTA / phone all land on the same
+          pixels as the real elements they crossfade with. */}
+      <div className="relative mx-auto max-w-7xl px-5 pb-24 pt-12 md:px-8 md:pt-16 lg:pt-20">
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div className="relative max-w-2xl">
-            {/* Eyebrow chip spacer (real chip ~30px tall + mb-5 = 20px). */}
-            <p
-              aria-hidden
-              className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-starry-blue-light opacity-0"
-            >
-              Capability showcase
-            </p>
             <h1 ref={headlineRef} className="text-hero text-balance text-ink-primary">
               Investing, explained.
             </h1>
-            {/* Italic tagline spacer. */}
-            <p
-              aria-hidden
-              className="mt-4 max-w-xl text-sub italic text-ink-soft opacity-0"
-            >
-              An education platform for the generation finance forgot.
-            </p>
             <p
               ref={subRef}
               className="mt-7 max-w-xl text-body-lg text-ink-soft"
             >
-              StarryTrader teaches Gen Z how markets actually work. Without the shame, without the hype, without the trading-app gamification that got them burned in the first place. Built on peer-reviewed research. Designed for the way they actually learn.
+              Free, non-profit financial education for the generation finance forgot. Built on peer-reviewed research. Designed for the way they actually learn.
             </p>
             <div ref={ctaRef} className="mt-9 flex flex-wrap items-center gap-4">
               <span className="inline-flex h-12 items-center rounded-full bg-starry-violet-deep px-6 text-[16px] font-medium text-white shadow-[0_8px_24px_-8px_rgba(76,63,224,0.55)]">
@@ -344,7 +337,8 @@ function LaunchAnimationInner() {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

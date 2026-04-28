@@ -2,6 +2,7 @@ import { Hero } from "@/components/sections/Hero";
 import { PillarsTeaser } from "@/components/sections/PillarsTeaser";
 import { ResearchTeaser } from "@/components/sections/ResearchTeaser";
 import { PressTeaser } from "@/components/sections/PressTeaser";
+import { HomePartners } from "@/components/sections/HomePartners";
 import { TeamTeaser } from "@/components/sections/TeamTeaser";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { WaveDivider } from "@/components/decoration/WaveDivider";
@@ -30,6 +31,7 @@ export default function Home() {
       <WaveDivider to="mist" />
       <div className="bg-light-mist">
         <PressTeaser />
+        <HomePartners />
       </div>
       <WaveDivider to="deep" direction="up" />
 

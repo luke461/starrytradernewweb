@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/Card";
@@ -39,7 +40,7 @@ export default async function TeamMemberPage({ params }: { params: Params }) {
           </Link>
 
           <div className="mt-10 flex flex-col items-start gap-8 md:flex-row md:items-center">
-            <Portrait name={member.name} />
+            <Portrait name={member.name} avatar={member.avatar} />
             <div>
               <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-blue-light">{member.role}</p>
               <h1 className="mt-3 text-section text-ink-primary">{member.name}</h1>
@@ -142,8 +143,19 @@ export default async function TeamMemberPage({ params }: { params: Params }) {
   );
 }
 
-function Portrait({ name }: { name: string }) {
-  const initial = name.replace(/[\[\]]/g, "").trim().charAt(0) || "★";
+function Portrait({ name, avatar }: { name: string; avatar?: string }) {
+  const cleanName = name.replace(/[\[\]]/g, "").trim();
+
+  if (avatar) {
+    return (
+      <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-full ring-1 ring-white/10 shadow-[0_20px_60px_-20px_rgba(107,91,255,0.6)]">
+        <Image src={avatar} alt={cleanName} width={128} height={128} className="h-full w-full object-cover" />
+        <Sparkle size={20} className="absolute right-2 top-2" />
+      </div>
+    );
+  }
+
+  const initial = cleanName.charAt(0) || "★";
   return (
     <div className="relative flex h-32 w-32 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-starry-violet via-starry-violet-soft to-starry-blue-light text-[42px] font-display font-semibold text-white shadow-[0_20px_60px_-20px_rgba(107,91,255,0.6)]">
       <span>{initial}</span>

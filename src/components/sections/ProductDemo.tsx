@@ -63,7 +63,7 @@ export function ProductDemo() {
 
         <p className="mt-10 text-center text-caption text-ink-muted">
           Want a live walkthrough?{" "}
-          <button onClick={openContact} className="text-starry-blue-light underline underline-offset-4 hover:text-starry-blue-soft">
+          <button onClick={() => openContact()} className="text-starry-blue-light underline underline-offset-4 hover:text-starry-blue-soft">
             Get in touch →
           </button>
         </p>

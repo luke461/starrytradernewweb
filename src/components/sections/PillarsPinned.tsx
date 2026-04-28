@@ -38,38 +38,55 @@ export function PillarsPinned() {
       const texts = gsap.utils.toArray<HTMLElement>("[data-pillar-text]", root);
       const phones = gsap.utils.toArray<HTMLElement>("[data-pillar-phone]", root);
 
-      gsap.set(texts.slice(1), { opacity: 0, y: 24 });
-      gsap.set(phones.slice(1), { opacity: 0, scale: 0.96 });
+      // Pillar 1 starts visible; pillars 2+3 enter from 24px below.
+      // force3D + willChange lift transforms to the GPU so the scrubbed
+      // timeline doesn't fall off the compositor under fast scroll.
+      gsap.set([texts[0], phones[0]], { force3D: true, willChange: "opacity, transform" });
+      gsap.set(texts.slice(1), { opacity: 0, y: 24, force3D: true, willChange: "opacity, transform" });
+      gsap.set(phones.slice(1), { opacity: 0, scale: 0.96, force3D: true, willChange: "opacity, transform" });
 
       const tl = gsap.timeline({
-        defaults: { ease: "power2.out" },
+        // ease: "none" because the scroll position itself is the easing
+        // curve. A non-linear ease on a scrubbed tween re-maps scroll to
+        // timeline progress and feels like the page is fighting you.
+        defaults: { ease: "none" },
         scrollTrigger: {
           trigger: root,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.3,
+          // Higher scrub = weighted, cinematic feel. 0.3 felt jittery
+          // on fast scroll; 0.8 is the cinematic-but-still-responsive
+          // sweet spot for three-card pinned narratives.
+          scrub: 0.8,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            const idx = Math.min(2, Math.floor(self.progress * 3));
+            // +0.02 nudge so the active dot doesn't flicker exactly at
+            // the 1/3 / 2/3 boundary while scrubbing across it.
+            const idx = Math.min(2, Math.floor(self.progress * 3 + 0.02));
             setActive(idx);
           },
         },
       });
 
-      // Three equal scroll thirds. Each transition is ~0.4 of a third
-      // (snappy enough not to feel laggy, slow enough to read).
-      // Pillar 1 visible 0..0.33 → fades out 0.33..0.45
-      // Pillar 2 fades in 0.36..0.48, visible 0.48..0.66, fades out 0.66..0.78
-      // Pillar 3 fades in 0.69..0.81, visible 0.81..1.0
-      const fade = 0.4;
-      tl.to(texts[0], { opacity: 0, y: -20, duration: fade }, 1.0)
-        .to(phones[0], { opacity: 0, scale: 0.96, duration: fade }, 1.0)
-        .to(texts[1], { opacity: 1, y: 0, duration: fade }, 1.1)
-        .to(phones[1], { opacity: 1, scale: 1, duration: fade }, 1.1)
-        .to(texts[1], { opacity: 0, y: -20, duration: fade }, 2.0)
-        .to(phones[1], { opacity: 0, scale: 0.96, duration: fade }, 2.0)
-        .to(texts[2], { opacity: 1, y: 0, duration: fade }, 2.1)
-        .to(phones[2], { opacity: 1, scale: 1, duration: fade }, 2.1);
+      // Timeline duration is normalised to 1.0 so positions read as
+      // fractions of the pinned scroll range. Each pillar gets a real
+      // dwell window — the old timing left pillar 3 fully visible only
+      // at the very last frame.
+      //   Pillar 1 dwell:    0.00 → 0.33
+      //   Transition 1 → 2:  0.33 → 0.48 (3% overlap)
+      //   Pillar 2 dwell:    0.48 → 0.66
+      //   Transition 2 → 3:  0.66 → 0.81 (3% overlap)
+      //   Pillar 3 dwell:    0.81 → 1.00
+      const FADE = 0.12;
+
+      tl.to(texts[0],  { opacity: 0, y: -20, duration: FADE }, 0.33)
+        .to(phones[0], { opacity: 0, scale: 0.96, duration: FADE }, 0.33)
+        .to(texts[1],  { opacity: 1, y: 0, duration: FADE }, 0.36)
+        .to(phones[1], { opacity: 1, scale: 1, duration: FADE }, 0.36)
+        .to(texts[1],  { opacity: 0, y: -20, duration: FADE }, 0.66)
+        .to(phones[1], { opacity: 0, scale: 0.96, duration: FADE }, 0.66)
+        .to(texts[2],  { opacity: 1, y: 0, duration: FADE }, 0.69)
+        .to(phones[2], { opacity: 1, scale: 1, duration: FADE }, 0.69);
 
       // Layout above us (hero) hydrates after we mount; recompute pin math.
       ScrollTrigger.refresh();
@@ -96,7 +113,7 @@ export function PillarsPinned() {
     <section ref={containerRef} className="relative" style={{ height: "340vh" }}>
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         <div className="mx-auto grid w-full max-w-7xl grid-cols-[1.05fr_0.95fr] items-center gap-12 px-8">
-          <div className="relative min-h-[60vh]">
+          <div className="relative min-h-[74vh]">
             <ProgressDots count={3} active={active} />
             {pillars.map((p, i) => (
               <div
@@ -105,12 +122,12 @@ export function PillarsPinned() {
                 className="absolute inset-0 flex flex-col justify-center"
                 style={{ opacity: i === 0 ? 1 : 0, willChange: "opacity, transform" }}
               >
-                <PillarText pillar={p} />
+                <PillarText pillar={p} compact />
               </div>
             ))}
           </div>
 
-          <div className="relative flex min-h-[60vh] items-center justify-center">
+          <div className="relative flex min-h-[74vh] items-center justify-center">
             {pillars.map((p, i) => (
               <div
                 key={p.id}
@@ -118,7 +135,11 @@ export function PillarsPinned() {
                 className="absolute inset-0 flex items-center justify-center"
                 style={{ opacity: i === 0 ? 1 : 0, willChange: "opacity, transform" }}
               >
-                <PhoneMockup ariaLabel={`${p.visualLabel} screen`} tilt={false}>
+                <PhoneMockup
+                  ariaLabel={`${p.visualLabel} screen`}
+                  tilt={false}
+                  className="!w-[clamp(200px,28vh,300px)]"
+                >
                   <PillarScreen pillarId={p.id} />
                 </PhoneMockup>
               </div>
@@ -145,21 +166,36 @@ function ProgressDots({ count, active }: { count: number; active: number }) {
   );
 }
 
-function PillarText({ pillar }: { pillar: Pillar }) {
+function PillarText({ pillar, compact = false }: { pillar: Pillar; compact?: boolean }) {
+  // `compact` reduces vertical space so the full pillar block fits inside
+  // the pinned viewport without pushing the eyebrow off-screen on shorter
+  // laptops. The fallback stacked layout passes compact=false.
+  const titleClass = compact
+    ? "mt-3 font-display text-[24px] md:text-[26px] font-semibold leading-tight tracking-tight text-balance text-ink-primary"
+    : "mt-3 text-sub text-balance text-ink-primary";
+  const cardMt = compact ? "mt-4" : "mt-5";
+  const headlineMt = compact ? "mt-4" : "mt-5";
+  const headlineSize = compact ? "text-[17px]" : "text-[20px]";
+  const listMt = compact ? "mt-3" : "mt-4";
+  const listSpacing = compact ? "space-y-2" : "space-y-2.5";
+
   return (
     <div className="max-w-xl">
       <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-blue-light">Pillar {pillar.index}</p>
-      <h3 className="mt-3 text-sub text-balance text-ink-primary">{pillar.title}</h3>
+      <h3 className={titleClass}>{pillar.title}</h3>
+      {pillar.clarifier && (
+        <p className="mt-2 text-[14px] italic text-starry-blue-light">{pillar.clarifier}</p>
+      )}
 
-      <Card className="mt-5 !p-5 !bg-starry-deep/60" glow="violet">
+      <Card className={`${cardMt} !p-4 !bg-starry-deep/60`} glow="violet">
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted">Research insight</p>
-        <p className="mt-2 text-[14.5px] italic leading-snug text-ink-soft">“{pillar.insight.quote}”</p>
+        <p className="mt-2 text-[14px] italic leading-snug text-ink-soft">“{pillar.insight.quote}”</p>
         <p className="mt-2 font-mono text-caption text-ink-muted">{pillar.insight.source}</p>
       </Card>
 
-      <p className="mt-5 font-display text-[20px] font-semibold leading-snug text-ink-primary">{pillar.headline}</p>
+      <p className={`${headlineMt} font-display ${headlineSize} font-semibold leading-snug text-ink-primary`}>{pillar.headline}</p>
 
-      <ul className="mt-4 space-y-2.5">
+      <ul className={`${listMt} ${listSpacing}`}>
         {pillar.capabilities.slice(0, 3).map((c) => (
           <li key={c.name} className="flex gap-3">
             <span aria-hidden className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-starry-blue-light" />

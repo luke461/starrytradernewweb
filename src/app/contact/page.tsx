@@ -7,14 +7,14 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Get in touch",
-  description: "Investor, partner, journalist, or just curious. Reach the StarryTrader team.",
+  description: "Partner, journalist, learner, or just curious. Reach the StarryTrader team.",
 };
 
 const channels = [
   { label: "General", email: site.contact.general, who: "Anyone with a question that doesn’t fit below." },
+  { label: "Partnerships", email: site.contact.partnerships, who: "Universities, foundations, fintechs, AI providers, distribution channels." },
+  { label: "Sponsorship", email: site.contact.sponsorship, who: "Mission-aligned organisations supporting our educational mission." },
   { label: "Press", email: site.contact.press, who: "Journalists, newsletter editors, podcast producers." },
-  { label: "Partnerships", email: site.contact.partnerships, who: "Universities, fintechs, distribution channels, AI providers." },
-  { label: "Investors", email: site.contact.investors, who: "Venture investors and angels." },
 ];
 
 export default function ContactPage() {

@@ -1,0 +1,22 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# Netlify's Next.js Runtime is auto-installed for Next.js projects. It
+# handles SSR, ISR, image optimization, middleware, and route caching
+# without further configuration. Listed here for clarity.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Pre-launch preview deploy: tell every search engine NOT to index the
+# *.netlify.app URL. The site stays accessible to anyone with the link
+# but won't appear in Google / Bing / etc. Remove this whole [[headers]]
+# block (or invert noindex → all) when launching officially.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

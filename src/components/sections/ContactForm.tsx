@@ -4,17 +4,25 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { site } from "@/lib/site";
 
-type Audience = "investor" | "partner" | "press" | "talent" | "other";
+type Audience = "general" | "partnership" | "sponsorship" | "press" | "careers";
 
 const audiences: { value: Audience; label: string }[] = [
-  { value: "investor", label: "Investor" },
-  { value: "partner", label: "Partner" },
+  { value: "general", label: "General" },
+  { value: "partnership", label: "Partnership" },
+  { value: "sponsorship", label: "Sponsorship" },
   { value: "press", label: "Press" },
-  { value: "talent", label: "Talent" },
-  { value: "other", label: "Other" },
+  { value: "careers", label: "Careers" },
 ];
 
-export function ContactForm({ defaultAudience = "investor" }: { defaultAudience?: Audience }) {
+const subjects: Record<Audience, string> = {
+  general: "General inquiry",
+  partnership: "Partnership inquiry",
+  sponsorship: "Sponsorship inquiry",
+  press: "Press inquiry",
+  careers: "Careers inquiry",
+};
+
+export function ContactForm({ defaultAudience = "general" }: { defaultAudience?: Audience }) {
   const [audience, setAudience] = useState<Audience>(defaultAudience);
   const [name, setName] = useState("");
   const [org, setOrg] = useState("");
@@ -22,22 +30,17 @@ export function ContactForm({ defaultAudience = "investor" }: { defaultAudience?
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const subject = encodeURIComponent(`[${audience}] inbound from ${name || "the StarryTrader site"}`);
+    const subject = encodeURIComponent(`[${subjects[audience]}] ${name || "inbound from starrytrader.com"}`);
     const body = encodeURIComponent(
-      `Name: ${name}\nOrganisation: ${org}\nAudience: ${audience}\n\n${message}\n\nSent from starrytrader.com.`,
+      `Name: ${name}\nOrganisation: ${org}\nInquiry type: ${subjects[audience]}\n\n${message}\n\nSent from starrytrader.com.`,
     );
-    const recipient =
-      audience === "press" ? site.contact.press :
-      audience === "partner" ? site.contact.partnerships :
-      audience === "investor" ? site.contact.investors :
-      site.contact.general;
-    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${site.contact.general}?subject=${subject}&body=${body}`;
   }
 
   return (
     <form onSubmit={submit} className="space-y-6">
       <div>
-        <label className="mb-2 block text-caption text-ink-soft">I am a</label>
+        <label className="mb-2 block text-caption text-ink-soft">Inquiry type</label>
         <div className="flex flex-wrap gap-2">
           {audiences.map((a) => (
             <button
@@ -70,12 +73,12 @@ export function ContactForm({ defaultAudience = "investor" }: { defaultAudience?
           onChange={(e) => setMessage(e.target.value)}
           rows={5}
           className="w-full resize-none rounded-xl border border-white/10 bg-starry-deep/60 px-4 py-3 text-[15px] text-ink-primary placeholder-ink-muted focus:border-starry-blue-light focus:outline-none"
-          placeholder="Tell us a bit about why you’re reaching out."
+          placeholder="Tell us a bit about why you&rsquo;re reaching out."
         />
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        <p className="text-caption text-ink-muted">We respond within 48 hours.</p>
+        <p className="text-caption text-ink-muted">We read everything. We respond within 48 hours.</p>
         <Button type="submit" variant="primary" size="md" magnetic>Send message</Button>
       </div>
     </form>

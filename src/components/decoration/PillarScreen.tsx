@@ -1,9 +1,27 @@
+import { PhoneScreenshot } from "./PhoneScreenshot";
+
+/**
+ * Per-pillar screenshot slots. Drop a 9:19.5 portrait image into
+ * /public/screenshots/ and set its path here. When set, the phone
+ * renders the real screenshot. When null, falls back to the stylised
+ * JSX below. Shared by PillarsPinned (/product) and PillarsTeaser (/).
+ */
+const PILLAR_SCREENSHOTS: Record<string, string | null> = {
+  learn: "/screenshots/learn-v2.webp",
+  research: "/screenshots/research-v2.webp",
+  compete: "/screenshots/compete-v3.webp",
+};
+
 /**
  * Phone-screen content for each of the three product pillars.
  * Shared between PillarsPinned (full-size on /product) and PillarsTeaser
  * (mini-size on the home page).
  */
 export function PillarScreen({ pillarId }: { pillarId: string }) {
+  const screenshot = PILLAR_SCREENSHOTS[pillarId];
+  if (screenshot) {
+    return <PhoneScreenshot src={screenshot} alt={`${pillarId} screen`} />;
+  }
   if (pillarId === "learn") {
     return (
       <div className="flex h-full flex-col bg-gradient-to-b from-starry-soft via-starry-mid to-starry-deep p-4">

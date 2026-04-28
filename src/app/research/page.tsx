@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle } from "@/components/decoration/Sparkle";
 import { Reveal } from "@/components/decoration/Reveal";
+import { FinalCta } from "@/components/sections/FinalCta";
 import { problemStats } from "@/content/home";
 import { site } from "@/lib/site";
 
@@ -146,6 +147,8 @@ export default function ResearchPage() {
           </Reveal>
         </div>
       </section>
+
+      <FinalCta />
     </div>
   );
 }

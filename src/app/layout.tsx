@@ -24,15 +24,15 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://starrytrader.com"),
   title: {
-    default: "StarryTrader. Investing, explained.",
+    default: "StarryTrader. Investing, explained. For everyone. For free.",
     template: "%s. StarryTrader.",
   },
   description:
-    "An education platform for the generation finance forgot. Built on peer-reviewed research. Designed for the way Gen Z actually learns.",
+    "Free, non-profit financial education for the generation finance forgot. Built on peer-reviewed research. Designed for the way they actually learn. No fees. No upsells. No commissions.",
   openGraph: {
-    title: "StarryTrader. Investing, explained.",
+    title: "StarryTrader. Investing, explained. For everyone. For free.",
     description:
-      "An education platform for the generation finance forgot. Built on peer-reviewed research.",
+      "Free, non-profit financial education for the generation finance forgot. Built on peer-reviewed research.",
     siteName: "StarryTrader",
     locale: "en_US",
     type: "website",
@@ -40,8 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "StarryTrader. Investing, explained.",
-    description: "An education platform for the generation finance forgot.",
+    title: "StarryTrader. Investing, explained. For everyone. For free.",
+    description: "Free, non-profit financial education for the generation finance forgot.",
   },
   icons: { icon: "/brand/starrytrader-logo-light.png" },
 };
@@ -55,12 +55,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Organization",
+              "@type": "NGO",
               name: "StarryTrader",
               url: "https://starrytrader.com",
               logo: "https://starrytrader.com/brand/starrytrader-logo-light.png",
-              slogan: "Investing, explained.",
-              description: "An education platform for the generation finance forgot.",
+              slogan: "Investing, explained. For everyone. For free.",
+              description: "Free, non-profit financial education for the generation finance forgot.",
               foundingLocation: ["Singapore", "Chicago"],
               email: "team@starrytrader.com",
               sameAs: [

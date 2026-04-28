@@ -17,11 +17,15 @@ export type Pillar = {
   headline: string;
   capabilities: Capability[];
   visualLabel: string;
+  // One-line clarifier rendered next to the pillar title on the Product page.
+  // Used to bridge the in-app feature name (e.g. "Compete") with the
+  // educational philosophy on the About page (e.g. "Practice").
+  clarifier?: string;
 };
 export type Review = { quote: string; name: string; age: number; location: string; tone: "violet" | "blue" | "indigo" };
 export type Partner = { name: string; category: "academic" | "ai" | "industry" | "media"; status: "real" | "target" };
-export type Award = { name: string; body: string; date: string; featured?: boolean; subline?: string };
-export type PressItem = { publication: string; date: string; headline: string; quote: string; href: string; locationTag: string };
+export type Award = { name: string; body: string; date: string; featured?: boolean; subline?: string; logo?: string };
+export type PressItem = { publication: string; date: string; headline: string; quote: string; href: string; locationTag: string; image?: string };
 export type TeamMember = {
   slug: string;
   name: string;
@@ -31,18 +35,17 @@ export type TeamMember = {
   thinking: string;
   socials?: { linkedin?: string; x?: string; email?: string };
   founder?: boolean;
+  // Drop a square image into /public/team/ and set this to the path,
+  // e.g. "/team/andre-liu.jpg". Leave undefined to use the initial-letter portrait.
+  avatar?: string;
 };
 
 export const hero = {
   trustStrip: {
     caption: "Featured in",
     logos: [
-      { name: "Google AI Showcase", real: true },
       { name: "The Daily Northwestern", real: true },
       { name: "NUS School of Computing", real: true },
-      { name: "Morning Brew", real: false },
-      { name: "Tech in Asia", real: false },
-      { name: "Built In Chicago", real: false },
     ],
   },
 };
@@ -105,6 +108,7 @@ export const pillars: Pillar[] = [
       { name: "Interactive Polls and Trivia", description: "Test strategy and knowledge against the community in short, daily formats." },
     ],
     visualLabel: "LeetTrade",
+    clarifier: "Practice through competition. Risk-free.",
   },
 ];
 
@@ -130,13 +134,28 @@ export const partners: Partner[] = [
   { name: "Google Gemini", category: "ai", status: "real" },
 ];
 
+/**
+ * App / brokerage partners shown in the home and team partner blocks.
+ * Logos render inside a small white card so the dark wordmarks stay
+ * legible on the dark surface. logoHeightClass is per-partner so the
+ * wordmark text appears the same size visually even when the source
+ * canvases have different padding (MooMoo PNG is square 512x512 with
+ * lots of padding; uSMART PNG is tightly cropped 348x145).
+ */
+export type AppPartner = { name: string; logo: string; href?: string; logoHeightClass?: string };
+export const appPartners: AppPartner[] = [
+  { name: "MooMoo", logo: "/images/partners/moomoo.webp", href: "https://www.moomoo.com", logoHeightClass: "h-[104px]" },
+  { name: "uSMART", logo: "/images/partners/usmart.webp", href: "https://www.usmart.com", logoHeightClass: "h-[64px]" },
+];
+
 export const awards: Award[] = [
   {
     name: "Build with Gemini, Honourable Mention",
-    body: "Google AI Showcase, 2026",
-    date: "2026",
+    body: "Google AI Showcase, 2025",
+    date: "2025",
     featured: true,
     subline: "1 of 21 mentions, out of 3,100 submissions (0.67%).",
+    logo: "/images/awards/gemini.webp",
   },
 ];
 
@@ -148,6 +167,7 @@ export const press: PressItem[] = [
     quote: "His friends were dabbling in stock trading and losing money. When he asked about their strategies, the answers were vague. He asked why they never read the news or reports. The answer was honest: ‘Too many words.’",
     href: "https://www.comp.nus.edu.sg/news/from-ns-bunk-to-nus-how-andre-liu-kept-building/",
     locationTag: "Singapore",
+    image: "/images/press/nus-comp.webp",
   },
   {
     publication: "The Daily Northwestern",
@@ -156,6 +176,7 @@ export const press: PressItem[] = [
     quote: "A first-year built across two cities and one timezone gap that never sleeps.",
     href: "https://dailynorthwestern.com/2026/04/24/campus/northwestern-first-year-creates-educational-investing-app-while-completing-national-service-in-singapore/",
     locationTag: "Chicago",
+    image: "/images/press/daily-northwestern.webp",
   },
 ];
 
@@ -167,24 +188,24 @@ export const team: TeamMember[] = [
     location: "Singapore",
     city: "Singapore",
     thinking: "My friends said the news had too many words. So I built something with fewer.",
-    socials: { linkedin: "https://www.linkedin.com/in/andreliu", email: "andre@starrytrader.com" },
+    socials: { linkedin: "https://www.linkedin.com/in/andre-liu-009733184", email: "andre@starrytrader.com" },
     founder: true,
+    avatar: "/team/andre.webp",
   },
   {
     slug: "co-founder",
-    name: "[Co-founder Name]",
+    name: "Emmanuel",
     role: "Co-founder",
-    location: "Evanston, USA",
-    city: "Evanston",
+    location: "Chicago, USA",
+    city: "Chicago",
     thinking: "Building the app I wish existed when I lost my first $500.",
     founder: true,
+    avatar: "/team/emmanuel.webp",
+    socials: { linkedin: "https://www.linkedin.com/in/emmanuel-q-carter" },
   },
-  { slug: "head-of-content", name: "[Head of Content]", role: "Head of Content", location: "Singapore", city: "Singapore", thinking: "Translating finance into language Gen Z actually uses." },
-  { slug: "lead-designer", name: "[Lead Designer]", role: "Lead Designer", location: "Chicago", city: "Chicago", thinking: "Designing the calmest place on the internet to learn about money." },
-  { slug: "head-of-community", name: "[Head of Community]", role: "Head of Community", location: "Singapore", city: "Singapore", thinking: "Communities don’t scale by accident." },
-  { slug: "ml-engineer", name: "[ML and AI Engineer]", role: "ML and AI Engineer", location: "Chicago", city: "Chicago", thinking: "7,000 articles a day, summarised so a 19-year-old will actually read them." },
-  { slug: "head-of-partnerships", name: "[Head of Partnerships]", role: "Head of Partnerships", location: "Singapore", city: "Singapore", thinking: "The best educators in finance are the ones not currently selling anything." },
-  { slug: "education-lead", name: "[Education Lead]", role: "Education Lead", location: "Chicago", city: "Chicago", thinking: "Curriculum that respects the learner’s starting point." },
+  { slug: "ava", name: "Ava", role: "Marketing", location: "Chicago, USA", city: "Chicago", thinking: "[Add Ava's one-line quote]", avatar: "/team/ava.webp", socials: { linkedin: "https://www.linkedin.com/in/ava-luo-757940243" } },
+  { slug: "luke", name: "Luke", role: "Marketing", location: "Singapore", city: "Singapore", thinking: "[Add Luke's one-line quote]", avatar: "/team/luke.webp", socials: { linkedin: "https://www.linkedin.com/in/luke-carter-931916267" } },
+  { slug: "lucas", name: "Lucas", role: "Operations", location: "Australia", city: "Other", thinking: "[Add Lucas's one-line quote]", avatar: "/team/lucas.webp", socials: { linkedin: "https://www.linkedin.com/in/lucas-cheah-158a12358" } },
 ];
 
 export const blogPreviews = [

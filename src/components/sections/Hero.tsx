@@ -3,9 +3,15 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { PhoneMockup } from "@/components/decoration/PhoneMockup";
+import { PhoneScreenshot } from "@/components/decoration/PhoneScreenshot";
 import { Sparkle } from "@/components/decoration/Sparkle";
 import { useUi } from "@/components/providers/UiProvider";
 import { hero } from "@/content/home";
+
+// Drop a 9:19.5 portrait screenshot (e.g. 1080x2340) into /public/screenshots/
+// and set this to its path, e.g. "/screenshots/hero-watchlist.png".
+// Leave as null to render the stylised placeholder watchlist screen below.
+const HERO_SCREENSHOT: string | null = "/screenshots/hero-v2.webp";
 
 export function Hero() {
   const { openContact } = useUi();
@@ -15,24 +21,18 @@ export function Hero() {
       <div className="absolute inset-0 bg-hero-cosmic" aria-hidden />
       <div className="grain absolute inset-0" aria-hidden />
 
-      <div className="relative mx-auto max-w-7xl px-5 pb-24 pt-20 md:px-8 md:pt-28 lg:pt-36">
+      <div className="relative mx-auto max-w-7xl px-5 pb-24 pt-12 md:px-8 md:pt-16 lg:pt-20">
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div className="relative max-w-2xl">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-starry-blue-light">
-              <Sparkle size={14} /> Capability showcase
-            </p>
             <h1 className="text-hero text-balance text-ink-primary">
               Investing, explained.
             </h1>
-            <p className="mt-4 max-w-xl text-sub italic text-ink-soft">
-              An education platform for the generation finance forgot.
-            </p>
             <p className="mt-7 max-w-xl text-body-lg text-ink-soft">
-              StarryTrader teaches Gen Z how markets actually work. Without the shame, without the hype, without the trading-app gamification that got them burned in the first place. Built on peer-reviewed research. Designed for the way they actually learn.
+              Free, non-profit financial education for the generation finance forgot. Built on peer-reviewed research. Designed for the way they actually learn.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Button variant="primary" size="lg" onClick={openContact} magnetic>
+              <Button variant="primary" size="lg" onClick={() => openContact()} magnetic>
                 Get in touch
               </Button>
               <Link
@@ -53,7 +53,11 @@ export function Hero() {
             <Sparkle tone="violet" size={20} className="absolute right-2 top-32 z-10" />
             <Sparkle tone="violet-soft" size={26} className="absolute bottom-10 -left-2 z-10" />
             <PhoneMockup ariaLabel="StarryTrader Watchlist AI Summary card">
-              <WatchlistScreen />
+              {HERO_SCREENSHOT ? (
+                <PhoneScreenshot src={HERO_SCREENSHOT} alt="StarryTrader app screen" priority />
+              ) : (
+                <WatchlistScreen />
+              )}
             </PhoneMockup>
           </div>
         </div>
@@ -111,12 +115,19 @@ function TrustStrip() {
         {hero.trustStrip.logos.map((logo) => (
           <li
             key={logo.name}
-            className={`text-[13px] font-medium transition-colors ${
-              logo.real ? "text-ink-soft" : "text-ink-muted/60"
-            }`}
+            className="text-[13px] font-medium"
             title={logo.real ? logo.name : `${logo.name} (target)`}
           >
-            {logo.name}
+            {logo.real ? (
+              <Link
+                href="/press"
+                className="text-ink-soft transition-colors hover:text-starry-blue-light hover:underline underline-offset-4"
+              >
+                {logo.name}
+              </Link>
+            ) : (
+              <span className="text-ink-muted/60">{logo.name}</span>
+            )}
           </li>
         ))}
       </ul>

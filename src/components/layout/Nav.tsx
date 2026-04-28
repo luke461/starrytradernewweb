@@ -9,6 +9,7 @@ import { useUi } from "@/components/providers/UiProvider";
 
 const links = [
   { href: "/product", label: "What we’re building" },
+  { href: "/about", label: "About" },
   { href: "/research", label: "The research" },
   { href: "/press", label: "Press" },
   { href: "/team", label: "Team" },
@@ -47,7 +48,7 @@ export function Nav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 md:px-8">
         <Logo size={28} />
 
-        <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
           {links.map((l) => {
             const active = isActive(l.href);
             return (
@@ -79,7 +80,7 @@ export function Nav() {
             See the product
             <span aria-hidden className="inline-block transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/sec:translate-x-1">→</span>
           </button>
-          <Button variant="primary" size="md" onClick={openContact} magnetic>
+          <Button variant="primary" size="md" onClick={() => openContact()} magnetic>
             Get in touch
           </Button>
         </div>

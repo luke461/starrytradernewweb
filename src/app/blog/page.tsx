@@ -6,6 +6,7 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/decoration/Reveal";
+import { FinalCta } from "@/components/sections/FinalCta";
 import { blogPosts, type BlogCategory } from "@/content/blog-posts";
 
 const categories = ["All", "Beginner", "Bias", "Market Cycles", "Community", "Behind StarryTrader"] as const;
@@ -93,6 +94,8 @@ export default function BlogIndexPage() {
           )}
         </div>
       </section>
+
+      <FinalCta />
     </div>
   );
 }

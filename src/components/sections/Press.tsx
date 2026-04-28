@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle, Constellation } from "@/components/decoration/Sparkle";
 import { Reveal } from "@/components/decoration/Reveal";
 import { press } from "@/content/home";
+import { site } from "@/lib/site";
 
 export function Press() {
   return (
@@ -56,7 +57,7 @@ export function Press() {
         </div>
 
         <p className="mt-10 text-center text-caption text-ink-muted">
-          Press inquiries: <a href="mailto:press@starrytrader.com" className="text-ink-soft hover:text-ink-primary">press@starrytrader.com</a>. We respond within 48 hours.
+          Press inquiries: <a href={`mailto:${site.contact.press}`} className="text-ink-soft hover:text-ink-primary">{site.contact.press}</a>. We respond within 48 hours.
         </p>
       </div>
     </section>

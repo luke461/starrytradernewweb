@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PillarsPinned } from "@/components/sections/PillarsPinned";
 import { Reviews } from "@/components/sections/Reviews";
 import { StatsBand } from "@/components/sections/StatsBand";
+import { FinalCta } from "@/components/sections/FinalCta";
 import { Reveal } from "@/components/decoration/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -33,6 +34,7 @@ export default function ProductPage() {
 
       <StatsBand />
       <Reviews />
+      <FinalCta />
     </div>
   );
 }

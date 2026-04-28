@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle } from "@/components/decoration/Sparkle";
+import { GracefulImage } from "@/components/decoration/GracefulImage";
 import { Reveal } from "@/components/decoration/Reveal";
 import { awards } from "@/content/home";
 
@@ -25,8 +26,19 @@ export function Awards() {
           <Reveal delay={0.1}>
             <Card glow="blue" interactive className="mt-12 !p-10 border-starry-blue-light/30">
               <div className="flex items-start gap-6">
-                <div className="hidden sm:block">
-                  <Sparkle size={48} />
+                <div className="hidden sm:flex h-12 items-center">
+                  {featured.logo ? (
+                    <GracefulImage
+                      src={featured.logo}
+                      alt={featured.name}
+                      width={140}
+                      height={32}
+                      className="h-8 w-auto"
+                      fallback={<Sparkle size={48} />}
+                    />
+                  ) : (
+                    <Sparkle size={48} />
+                  )}
                 </div>
                 <div className="flex-1">
                   <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-starry-blue-light">Featured award</p>

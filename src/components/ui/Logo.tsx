@@ -4,15 +4,17 @@ import Link from "next/link";
 export function Logo({ size = 40, withWordmark = true, href = "/" }: { size?: number; withWordmark?: boolean; href?: string | null }) {
   const inner = (
     <span className="inline-flex items-center gap-3">
-      <Image
-        src="/brand/starrytrader-logo-light.png"
-        alt="StarryTrader"
-        width={size}
-        height={size}
-        priority
-        className="h-auto w-auto"
-        style={{ height: size, width: "auto" }}
-      />
+      <span className="inline-flex">
+        <Image
+          src="/brand/starrytrader-logo-light.png"
+          alt="StarryTrader"
+          width={size}
+          height={size}
+          priority
+          className="h-auto w-auto"
+          style={{ height: size, width: "auto" }}
+        />
+      </span>
       {withWordmark && (
         <span className="font-display text-[18px] font-semibold tracking-tight text-ink-primary">
           StarryTrader

@@ -5,22 +5,34 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { site } from "@/lib/site";
 
-type Audience = "investor" | "partner" | "press" | "talent" | "other";
+export type ContactAudience = "general" | "partnership" | "sponsorship" | "press" | "careers";
 
-const audiences: { value: Audience; label: string }[] = [
-  { value: "investor", label: "Investor" },
-  { value: "partner", label: "Partner" },
+const audiences: { value: ContactAudience; label: string }[] = [
+  { value: "general", label: "General" },
+  { value: "partnership", label: "Partnership" },
+  { value: "sponsorship", label: "Sponsorship" },
   { value: "press", label: "Press" },
-  { value: "talent", label: "Talent" },
-  { value: "other", label: "Other" },
+  { value: "careers", label: "Careers" },
 ];
 
-export function ContactModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const [audience, setAudience] = useState<Audience>("investor");
+const subjects: Record<ContactAudience, string> = {
+  general: "General inquiry",
+  partnership: "Partnership inquiry",
+  sponsorship: "Sponsorship inquiry",
+  press: "Press inquiry",
+  careers: "Careers inquiry",
+};
+
+export function ContactModal({ open, initialAudience = "general", onClose }: { open: boolean; initialAudience?: ContactAudience; onClose: () => void }) {
+  const [audience, setAudience] = useState<ContactAudience>(initialAudience);
   const [name, setName] = useState("");
   const [org, setOrg] = useState("");
   const [message, setMessage] = useState("");
   const dialogRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (open) setAudience(initialAudience);
+  }, [open, initialAudience]);
 
   useEffect(() => {
     if (!open) return;
@@ -37,12 +49,11 @@ export function ContactModal({ open, onClose }: { open: boolean; onClose: () => 
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const subject = encodeURIComponent(`[${audience}] inbound from ${name || "the StarryTrader site"}`);
+    const subject = encodeURIComponent(`[${subjects[audience]}] ${name || "inbound from starrytrader.com"}`);
     const body = encodeURIComponent(
-      `Name: ${name}\nOrganisation: ${org}\nAudience: ${audience}\n\n${message}\n\nSent from starrytrader.com.`,
+      `Name: ${name}\nOrganisation: ${org}\nInquiry type: ${subjects[audience]}\n\n${message}\n\nSent from starrytrader.com.`,
     );
-    const recipient = audience === "press" ? site.contact.press : audience === "partner" ? site.contact.partnerships : audience === "investor" ? site.contact.investors : site.contact.general;
-    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${site.contact.general}?subject=${subject}&body=${body}`;
   }
 
   return (
@@ -89,7 +100,7 @@ export function ContactModal({ open, onClose }: { open: boolean; onClose: () => 
 
             <form onSubmit={submit} className="space-y-5">
               <div>
-                <label className="mb-2 block text-caption text-ink-soft">I am a</label>
+                <label className="mb-2 block text-caption text-ink-soft">Inquiry type</label>
                 <div className="flex flex-wrap gap-2">
                   {audiences.map((a) => (
                     <button
@@ -128,7 +139,7 @@ export function ContactModal({ open, onClose }: { open: boolean; onClose: () => 
 
               <div className="flex items-center justify-between gap-3">
                 <p className="text-caption text-ink-muted">
-                  We respond within 48 hours.
+                  We read everything. We respond within 48 hours.
                 </p>
                 <Button type="submit" variant="primary" size="md">
                   Send message
