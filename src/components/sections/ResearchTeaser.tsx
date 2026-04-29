@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { CountUp } from "@/components/decoration/CountUp";
@@ -8,8 +9,27 @@ import { problemStats } from "@/content/home";
 
 export function ResearchTeaser() {
   return (
-    <section id="research" className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
+    <section id="research" className="relative overflow-hidden py-24 md:py-32">
+      {/* Brand watermark. Same treatment as the About hero: anchored off the
+          right edge, mask-faded on the left so it dissolves before reaching
+          the headline column. The light-surface logo is flipped to white via
+          a brightness(0) invert(1) filter so it reads on the dark surface.
+          Hidden under md so mobile keeps the headline uncrowded. */}
+      <Image
+        src="/brand/starrytrader-logo-light.png"
+        alt=""
+        aria-hidden
+        width={600}
+        height={600}
+        className="pointer-events-none absolute right-[-2%] top-4 hidden h-auto max-h-[260px] w-auto select-none opacity-[0.10] md:block md:top-6 lg:right-[4%]"
+        style={{
+          filter: "brightness(0) invert(1)",
+          maskImage: "linear-gradient(to right, transparent 0%, #000 35%)",
+          WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 35%)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-blue-light">The why</p>
           <h2 className="mt-3 max-w-3xl text-section text-balance text-ink-primary">

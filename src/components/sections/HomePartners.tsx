@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Reveal } from "@/components/decoration/Reveal";
 import { GracefulImage } from "@/components/decoration/GracefulImage";
 import { appPartners } from "@/content/home";
@@ -28,23 +29,35 @@ export function HomePartners() {
             ))}
           </ul>
         </Reveal>
+        <Reveal delay={0.18}>
+          <p className="mt-8 text-center">
+            <Link
+              href="/partners"
+              className="group/sec inline-flex items-center gap-1.5 text-[14px] font-medium text-starry-violet-deep transition-colors hover:text-starry-violet"
+            >
+              See how we work with partners
+              <span aria-hidden className="inline-block transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/sec:translate-x-1">→</span>
+            </Link>
+          </p>
+        </Reveal>
       </div>
     </section>
   );
 }
 
 /** Renders a partner logo inside a small white card so dark-on-dark
- *  wordmarks stay legible. Card height is fixed so MooMoo and uSMART
- *  cards sit on the same baseline; per-partner logoHeightClass tunes
- *  the wordmark visual size independent of source PNG padding. */
-export function PartnerLogo({ partner }: { partner: { name: string; logo: string; href?: string; logoHeightClass?: string } }) {
+ *  wordmarks stay legible. Sizing uses max-h + max-w + object-contain so
+ *  next/image's default max-width:100% can't fight a forced height and
+ *  squash the aspect ratio. Both trimmed source logos have similar
+ *  aspect ratios (~5.2:1) so a single shared sizing works. */
+export function PartnerLogo({ partner }: { partner: { name: string; logo: string; href?: string; logoWidth: number; logoHeight: number } }) {
   const inner = (
     <GracefulImage
       src={partner.logo}
       alt={partner.name}
-      width={200}
-      height={80}
-      className={`${partner.logoHeightClass ?? "h-[44px]"} w-auto`}
+      width={partner.logoWidth}
+      height={partner.logoHeight}
+      className="h-auto w-auto max-h-[40px] max-w-[180px] object-contain"
       fallback={
         <span className="font-display text-[20px] font-semibold tracking-tight text-starry-violet-deep">
           {partner.name}

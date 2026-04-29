@@ -28,22 +28,35 @@ export function Reviews() {
           />
         </Reveal>
 
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
           {reviews.map((r, i) => (
-            <Reveal key={r.name + r.location} delay={(i % 3) * 0.08}>
+            <Reveal key={r.attribution} delay={(i % 3) * 0.08}>
               <Card interactive className={`h-full bg-gradient-to-br ${toneClasses[r.tone]} bg-starry-mid`}>
-                <div className="flex items-center gap-1 text-starry-blue-light" aria-label="5 out of 5 stars">
-                  {Array.from({ length: 5 }).map((_, j) => (
-                    <svg key={j} width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                      <path d="M12 2 14.9 8.6 22 9.3l-5.5 4.8 1.7 7L12 17.8 5.8 21l1.7-7L2 9.3l7.1-.7L12 2Z" />
-                    </svg>
-                  ))}
+                <div className="flex items-center justify-between gap-3">
+                  <SourceLabel source={r.source} href={r.sourceHref} />
+                  {r.rating && <Stars rating={r.rating} />}
                 </div>
-                <p className="mt-5 text-[16px] leading-relaxed text-ink-primary">“{r.quote}”</p>
+
+                {r.title && (
+                  <h3 className="mt-5 font-display text-[20px] font-semibold leading-snug text-ink-primary">
+                    {r.title}
+                  </h3>
+                )}
+
+                <p className={`${r.title ? "mt-3" : "mt-5"} text-[16px] leading-relaxed text-ink-soft`}>
+                  &ldquo;{r.quote}&rdquo;
+                </p>
+
                 <div className="mt-6 flex items-center gap-3">
-                  <Avatar name={r.name} tone={r.tone} />
-                  <p className="text-[13px] text-ink-soft">
-                    <span className="font-medium text-ink-primary">{r.name}</span>, {r.age}, {r.location}.
+                  <Avatar name={r.attribution} tone={r.tone} />
+                  <p className="text-[13px] leading-tight text-ink-soft">
+                    <span className="font-medium text-ink-primary">{r.attribution}</span>
+                    {r.attributionDetail && (
+                      <>
+                        <br />
+                        <span className="text-ink-muted">{r.attributionDetail}</span>
+                      </>
+                    )}
                   </p>
                 </div>
               </Card>
@@ -55,10 +68,45 @@ export function Reviews() {
   );
 }
 
+function Stars({ rating }: { rating: number }) {
+  const filled = Math.max(0, Math.min(5, Math.round(rating)));
+  return (
+    <div className="flex items-center gap-0.5 text-starry-blue-light" aria-label={`${filled} out of 5 stars`}>
+      {Array.from({ length: 5 }).map((_, j) => (
+        <svg key={j} width="14" height="14" viewBox="0 0 24 24" fill={j < filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5" aria-hidden>
+          <path d="M12 2 14.9 8.6 22 9.3l-5.5 4.8 1.7 7L12 17.8 5.8 21l1.7-7L2 9.3l7.1-.7L12 2Z" />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+function SourceLabel({ source, href }: { source: string; href?: string }) {
+  const label = (
+    <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-starry-blue-light">
+      {source}
+    </span>
+  );
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 transition-opacity duration-200 hover:opacity-80"
+      >
+        {label}
+        <span aria-hidden className="text-[11px] text-starry-blue-light">↗</span>
+      </a>
+    );
+  }
+  return label;
+}
+
 function Avatar({ name, tone }: { name: string; tone: Review["tone"] }) {
   return (
-    <div className={`relative flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${ringClasses[tone]} text-[13px] font-semibold text-white`}>
-      {name.charAt(0)}
+    <div className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${ringClasses[tone]} text-[13px] font-semibold text-white`}>
+      {name.charAt(0).toUpperCase()}
     </div>
   );
 }

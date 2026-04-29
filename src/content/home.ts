@@ -22,17 +22,54 @@ export type Pillar = {
   // educational philosophy on the About page (e.g. "Practice").
   clarifier?: string;
 };
-export type Review = { quote: string; name: string; age: number; location: string; tone: "violet" | "blue" | "indigo" };
+export type Review = {
+  /** Optional headline (e.g., App Store review title). */
+  title?: string;
+  /** The review body / pull quote. */
+  quote: string;
+  /** Person or username being attributed. */
+  attribution: string;
+  /** Role / affiliation / date — shown as small text after the name. */
+  attributionDetail?: string;
+  /** Where the review came from: "App Store", publication name, etc. */
+  source: string;
+  /** Optional link to the original source (article URL, store listing). */
+  sourceHref?: string;
+  /** Star rating, 1–5. Omit for press quotes that don't have a rating. */
+  rating?: number;
+  tone: "violet" | "blue" | "indigo";
+};
 export type Partner = { name: string; category: "academic" | "ai" | "industry" | "media"; status: "real" | "target" };
 export type Award = { name: string; body: string; date: string; featured?: boolean; subline?: string; logo?: string };
-export type PressItem = { publication: string; date: string; headline: string; quote: string; href: string; locationTag: string; image?: string };
+export type PressItem = {
+  publication: string;
+  date: string;
+  headline: string;
+  quote: string;
+  href: string;
+  locationTag: string;
+  /** Article hero image used on /press cards. */
+  image?: string;
+  /** Optional publication logo (SVG preferred) shown in the home-hero
+   *  trust strip's white logo card. Drop a file into
+   *  `public/images/press-logos/` and point at it here, e.g.
+   *  `/images/press-logos/nus-comp.svg`. When undefined the card
+   *  falls back to the publication name as a text wordmark. */
+  logoPath?: string;
+  /** Optional logo intrinsic size in px so next/image preserves the
+   *  aspect ratio without squashing. Required when logoPath is set. */
+  logoWidth?: number;
+  logoHeight?: number;
+};
 export type TeamMember = {
   slug: string;
   name: string;
   role: string;
   location: string;
   city: "Singapore" | "Chicago" | "Evanston" | "Other";
-  thinking: string;
+  /** Optional one-line quote shown beneath the name. Founders use this
+   *  on the home/team cards; other members keep it omitted. */
+  thinking?: string;
   socials?: { linkedin?: string; x?: string; email?: string };
   founder?: boolean;
   // Drop a square image into /public/team/ and set this to the path,
@@ -120,12 +157,36 @@ export const stats = [
 ];
 
 export const reviews: Review[] = [
-  { quote: "I lost $400 on a meme stock in 2021 and stopped checking my brokerage for two years. StarryTrader is the first thing that didn’t make me feel stupid for trying again.", name: "Maya", age: 22, location: "Singapore", tone: "violet" },
-  { quote: "Daily Jargon got me. I learned more in three weeks of one-term-a-day than in a year of doom-scrolling Twitter finance.", name: "Devin", age: 25, location: "Chicago", tone: "blue" },
-  { quote: "I always thought ‘diversification’ was a word my dad used. Now I actually know what it means.", name: "Priya", age: 19, location: "London", tone: "indigo" },
-  { quote: "My friends won’t shut up about crypto. StarryTrader is the only place I can ask what ‘volatility’ actually means without getting roasted.", name: "Jordan", age: 18, location: "Austin", tone: "violet" },
-  { quote: "LeetTrade is the most honest finance product I’ve used. It tells me when I got it wrong and shows me why.", name: "Wei", age: 26, location: "Hong Kong", tone: "blue" },
-  { quote: "Stock Stories are dangerous. I went from never reading market news to swiping through 30 a day.", name: "Sofia", age: 24, location: "Madrid", tone: "indigo" },
+  {
+    title: "Great place to compile news all in one place",
+    quote:
+      "It’s great for short term traders, information gets compiled and distributed within the app. Within 1 hour of the press release information shows up from major news sources.",
+    attribution: "chu23cgu",
+    attributionDetail: "22 Aug",
+    source: "App Store review",
+    rating: 5,
+    tone: "violet",
+  },
+  {
+    quote:
+      "I didn’t have a clue what I was doing. I was just going based on my own sentiment, so I wasn’t looking at financial statements or anything like that. My dad just gave me a small account and said, ‘Good luck.’ If I’d had something like that, I probably wouldn’t have made as many stupid decisions.",
+    attribution: "Matthew Knigin",
+    attributionDetail: "McCormick first-year, Northwestern",
+    source: "The Daily Northwestern",
+    sourceHref:
+      "https://dailynorthwestern.com/2026/04/24/campus/northwestern-first-year-creates-educational-investing-app-while-completing-national-service-in-singapore/",
+    tone: "blue",
+  },
+  {
+    quote:
+      "The app does a really good job pulling all the latest and most relevant news articles and sort of laying it all out in front of you.",
+    attribution: "Alex DaCorte",
+    attributionDetail: "Weinberg first-year, Northwestern",
+    source: "The Daily Northwestern",
+    sourceHref:
+      "https://dailynorthwestern.com/2026/04/24/campus/northwestern-first-year-creates-educational-investing-app-while-completing-national-service-in-singapore/",
+    tone: "indigo",
+  },
 ];
 
 export const partners: Partner[] = [
@@ -136,17 +197,19 @@ export const partners: Partner[] = [
 
 /**
  * App / brokerage partners shown in the home and team partner blocks.
- * Logos render inside a small white card so the dark wordmarks stay
- * legible on the dark surface. logoHeightClass is per-partner so the
- * wordmark text appears the same size visually even when the source
- * canvases have different padding (MooMoo PNG is square 512x512 with
- * lots of padding; uSMART PNG is tightly cropped 348x145).
+ * Source of truth lives in `@/content/partners` (extended schema for the
+ * /partners page). This re-export adapts the schema to the legacy shape
+ * used by HomePartners.tsx and team/page.tsx.
  */
-export type AppPartner = { name: string; logo: string; href?: string; logoHeightClass?: string };
-export const appPartners: AppPartner[] = [
-  { name: "MooMoo", logo: "/images/partners/moomoo.webp", href: "https://www.moomoo.com", logoHeightClass: "h-[104px]" },
-  { name: "uSMART", logo: "/images/partners/usmart.webp", href: "https://www.usmart.com", logoHeightClass: "h-[64px]" },
-];
+import { partners as brokeragePartners } from "@/content/partners";
+export type AppPartner = { name: string; logo: string; href?: string; logoWidth: number; logoHeight: number };
+export const appPartners: AppPartner[] = brokeragePartners.map((p) => ({
+  name: p.name,
+  logo: p.logoPath,
+  href: p.url,
+  logoWidth: p.logoWidth,
+  logoHeight: p.logoHeight,
+}));
 
 export const awards: Award[] = [
   {
@@ -168,6 +231,9 @@ export const press: PressItem[] = [
     href: "https://www.comp.nus.edu.sg/news/from-ns-bunk-to-nus-how-andre-liu-kept-building/",
     locationTag: "Singapore",
     image: "/images/press/nus-comp.webp",
+    logoPath: "/images/press-logos/nus-comp.png",
+    logoWidth: 621,
+    logoHeight: 122,
   },
   {
     publication: "The Daily Northwestern",
@@ -177,6 +243,9 @@ export const press: PressItem[] = [
     href: "https://dailynorthwestern.com/2026/04/24/campus/northwestern-first-year-creates-educational-investing-app-while-completing-national-service-in-singapore/",
     locationTag: "Chicago",
     image: "/images/press/daily-northwestern.webp",
+    logoPath: "/images/press-logos/daily-northwestern.svg",
+    logoWidth: 525,
+    logoHeight: 61,
   },
 ];
 
@@ -184,7 +253,7 @@ export const team: TeamMember[] = [
   {
     slug: "andre-liu",
     name: "Andre Liu",
-    role: "Co-founder",
+    role: "Co-founder and CEO",
     location: "Singapore",
     city: "Singapore",
     thinking: "My friends said the news had too many words. So I built something with fewer.",
@@ -195,7 +264,7 @@ export const team: TeamMember[] = [
   {
     slug: "co-founder",
     name: "Emmanuel",
-    role: "Co-founder",
+    role: "Co-founder and CEO",
     location: "Chicago, USA",
     city: "Chicago",
     thinking: "Building the app I wish existed when I lost my first $500.",
@@ -203,9 +272,11 @@ export const team: TeamMember[] = [
     avatar: "/team/emmanuel.webp",
     socials: { linkedin: "https://www.linkedin.com/in/emmanuel-q-carter" },
   },
-  { slug: "ava", name: "Ava", role: "Marketing", location: "Chicago, USA", city: "Chicago", thinking: "[Add Ava's one-line quote]", avatar: "/team/ava.webp", socials: { linkedin: "https://www.linkedin.com/in/ava-luo-757940243" } },
-  { slug: "luke", name: "Luke", role: "Marketing", location: "Singapore", city: "Singapore", thinking: "[Add Luke's one-line quote]", avatar: "/team/luke.webp", socials: { linkedin: "https://www.linkedin.com/in/luke-carter-931916267" } },
-  { slug: "lucas", name: "Lucas", role: "Operations", location: "Australia", city: "Other", thinking: "[Add Lucas's one-line quote]", avatar: "/team/lucas.webp", socials: { linkedin: "https://www.linkedin.com/in/lucas-cheah-158a12358" } },
+  { slug: "ava", name: "Ava", role: "Head of Communications and Partnerships", location: "Chicago, USA", city: "Chicago", avatar: "/team/ava.webp", socials: { linkedin: "https://www.linkedin.com/in/ava-luo-757940243" } },
+  { slug: "luke", name: "Luke", role: "Digital Marketing Manager", location: "Singapore", city: "Singapore", avatar: "/team/luke.webp", socials: { linkedin: "https://www.linkedin.com/in/luke-carter-931916267" } },
+  { slug: "lucas", name: "Lucas", role: "COO and Head of Product", location: "Australia", city: "Other", avatar: "/team/lucas.webp", socials: { linkedin: "https://www.linkedin.com/in/lucas-cheah-158a12358" } },
+  { slug: "sinclair", name: "Sinclair", role: "Software Engineer", location: "Singapore", city: "Singapore", avatar: "/team/sinclair.webp", socials: { linkedin: "https://www.linkedin.com/in/sinclair-ng-sn" } },
+  { slug: "yuan-feng", name: "Yuan Feng", role: "Software Engineer", location: "Singapore", city: "Singapore", avatar: "/team/yuan-feng.webp", socials: { linkedin: "https://www.linkedin.com/in/kew-yuan-feng-0879aa226" } },
 ];
 
 export const blogPreviews = [

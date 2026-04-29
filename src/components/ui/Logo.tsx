@@ -10,6 +10,7 @@ export function Logo({ size = 40, withWordmark = true, href = "/" }: { size?: nu
           alt="StarryTrader"
           width={size}
           height={size}
+          sizes="(max-width: 640px) 40px, 60px"
           priority
           className="h-auto w-auto"
           style={{ height: size, width: "auto" }}

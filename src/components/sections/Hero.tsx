@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { PhoneMockup } from "@/components/decoration/PhoneMockup";
 import { PhoneScreenshot } from "@/components/decoration/PhoneScreenshot";
 import { Sparkle } from "@/components/decoration/Sparkle";
 import { useUi } from "@/components/providers/UiProvider";
-import { hero } from "@/content/home";
+import { hero, press } from "@/content/home";
 
 // Drop a 9:19.5 portrait screenshot (e.g. 1080x2340) into /public/screenshots/
 // and set this to its path, e.g. "/screenshots/hero-watchlist.png".
@@ -107,27 +108,58 @@ function WatchlistScreen() {
   );
 }
 
+/**
+ * Logo-wall style press strip. Hairline-bracketed eyebrow above a row of
+ * white cards, one per publication. Text wordmarks for now since no
+ * official logo SVGs are on hand; drop a logoPath into the press entry
+ * later and the card will render the image instead of the wordmark.
+ */
 function TrustStrip() {
+  const features = press.slice(0, 2);
+  if (features.length === 0) return null;
+
   return (
-    <div className="mt-20 border-t border-white/[0.06] pt-8">
-      <p className="text-center font-mono text-[11px] uppercase tracking-[0.2em] text-ink-muted">{hero.trustStrip.caption}</p>
-      <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:gap-x-12">
-        {hero.trustStrip.logos.map((logo) => (
-          <li
-            key={logo.name}
-            className="text-[13px] font-medium"
-            title={logo.real ? logo.name : `${logo.name} (target)`}
-          >
-            {logo.real ? (
-              <Link
-                href="/press"
-                className="text-ink-soft transition-colors hover:text-starry-blue-light hover:underline underline-offset-4"
-              >
-                {logo.name}
-              </Link>
-            ) : (
-              <span className="text-ink-muted/60">{logo.name}</span>
-            )}
+    <div className="mt-20 md:mt-24">
+      {/* Hairline-bracketed eyebrow, mimics the reference layout */}
+      <div className="mx-auto flex max-w-3xl items-center justify-center gap-4 px-5">
+        <span aria-hidden className="h-px flex-1 bg-white/[0.10]" />
+        <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-ink-muted">
+          As featured in
+        </p>
+        <span aria-hidden className="h-px flex-1 bg-white/[0.10]" />
+      </div>
+
+      {/* Logo-wall cards. Centered grid, 2 cards equal-width, room for more later. */}
+      <ul
+        className={`mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-4 px-5 sm:grid-cols-${Math.min(
+          features.length,
+          2,
+        )} sm:gap-5`}
+        style={{ gridTemplateColumns: `repeat(${Math.min(features.length, 2)}, minmax(0, 1fr))` }}
+      >
+        {features.map((p) => (
+          <li key={p.publication}>
+            <a
+              href={p.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Read the ${p.publication} feature`}
+              className="group flex h-[96px] w-full items-center justify-center rounded-xl bg-white px-6 ring-1 ring-white/15 shadow-[0_10px_28px_-14px_rgba(0,0,0,0.5)] transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-14px_rgba(0,0,0,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-starry-blue-light"
+            >
+              {p.logoPath && p.logoWidth && p.logoHeight ? (
+                <Image
+                  src={p.logoPath}
+                  alt={p.publication}
+                  width={p.logoWidth}
+                  height={p.logoHeight}
+                  className="h-auto max-h-[56px] w-auto max-w-full object-contain"
+                />
+              ) : (
+                <span className="text-balance text-center font-display text-[16px] font-semibold leading-tight tracking-tight text-ink-on-light transition-colors duration-200 group-hover:text-starry-violet-deep md:text-[18px]">
+                  {p.publication}
+                </span>
+              )}
+            </a>
           </li>
         ))}
       </ul>

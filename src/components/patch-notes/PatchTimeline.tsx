@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
 import { patchNotes, patchNotesCloser, type PatchEntry } from "@/content/patchNotes";
+import { JumpToLatest } from "@/components/patch-notes/JumpToLatest";
 
 /**
  * The build-log timeline. Eighteen patches arranged as a vertical
@@ -22,6 +23,8 @@ export function PatchTimeline() {
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
   const closerRef = useRef<HTMLElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [hitIdx, setHitIdx] = useState(-1);
+  const starYRef = useRef<number[]>([]);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -34,7 +37,65 @@ export function PatchTimeline() {
     target: trackRef,
     offset: ["start center", "end end"],
   });
-  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  // Spring-smooth the scroll driver so the line eases toward its target
+  // instead of snapping. Reads as the line "catching up" to scroll and
+  // briefly settling on each star — softer, more weighted motion.
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 24,
+    mass: 1,
+  });
+  // Hit detection should fire when the *visible* line tip reaches a star,
+  // so subscribe to whichever progress drives the line. Under reduced
+  // motion, bypass the spring entirely.
+  const drivenProgress = reduceMotion ? scrollYProgress : smoothProgress;
+  const lineHeight = useTransform(drivenProgress, [0, 1], ["0%", "100%"]);
+
+  // Cache each star's Y offset within the section so we can detect when
+  // the drawn line passes it. Recompute on resize and after a short delay
+  // so images / fonts have a chance to settle the layout.
+  useEffect(() => {
+    function recompute() {
+      const ys: number[] = [];
+      cardRefs.current.forEach((el) => {
+        if (!el) return;
+        // StarNode is at top:50% of the card.
+        ys.push(el.offsetTop + el.offsetHeight / 2);
+      });
+      if (closerRef.current) {
+        ys.push(closerRef.current.offsetTop + closerRef.current.offsetHeight / 2);
+      }
+      starYRef.current = ys;
+    }
+    recompute();
+    const timers = [setTimeout(recompute, 200), setTimeout(recompute, 800)];
+    window.addEventListener("resize", recompute);
+    return () => {
+      timers.forEach(clearTimeout);
+      window.removeEventListener("resize", recompute);
+    };
+  }, []);
+
+  // Drive `hitIdx` from the drawn line's actual bottom Y. Each star
+  // pulses when the line crosses it. The cutoff is clamped to the mask
+  // boundary (section height minus 30rem) so stars below the visible
+  // line tail never get falsely "hit" at high scroll progress.
+  // Subscribe to `drivenProgress` (the spring-smoothed value) so the
+  // pulse fires exactly when the visible line tip reaches the star.
+  useEffect(() => {
+    const unsub = drivenProgress.on("change", (progress) => {
+      if (!trackRef.current) return;
+      const sectionH = trackRef.current.scrollHeight;
+      const maxVisualY = sectionH - 30 * 16; // 30rem in px, matches mask transparent point
+      const lineBottom = Math.min(progress * sectionH, maxVisualY);
+      let highest = -1;
+      starYRef.current.forEach((y, i) => {
+        if (y <= lineBottom) highest = i;
+      });
+      setHitIdx((prev) => (prev !== highest ? highest : prev));
+    });
+    return unsub;
+  }, [drivenProgress]);
 
   // Active node = the card whose vertical center is closest to the
   // viewport center. We poll on scroll instead of using IntersectionObserver
@@ -105,17 +166,31 @@ export function PatchTimeline() {
 
   return (
     <section ref={trackRef} className="relative bg-starry-deep pb-32 pt-12 md:pt-20">
-      {/* Base line (dim, full-height) */}
+      {/* Line region: both lines live inside a single mask wrapper so they
+          fade out cleanly above the closer card instead of running through
+          the closer text. The mask is in the wrapper's coordinate space
+          (= section height) so it works regardless of the drawn line's
+          current height. Tuned to terminate ~32rem above the section
+          bottom which sits above the closer content on standard laptop
+          viewports (where the closer is roughly 24-30rem tall). */}
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-0 top-0 w-px bg-starry-violet-soft/15 left-4 lg:left-1/2 lg:-translate-x-1/2"
-      />
-      {/* Drawn line (bright, scroll-driven) */}
-      <motion.div
-        aria-hidden
-        style={{ height: reduceMotion ? "100%" : lineHeight }}
-        className="pointer-events-none absolute top-0 w-px bg-starry-violet-soft/60 left-4 lg:left-1/2 lg:-translate-x-1/2"
-      />
+        className="pointer-events-none absolute inset-0"
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(to bottom, #000 calc(100% - 34rem), transparent calc(100% - 30rem))",
+          maskImage:
+            "linear-gradient(to bottom, #000 calc(100% - 34rem), transparent calc(100% - 30rem))",
+        }}
+      >
+        {/* Base line (dim, full-height) */}
+        <div className="absolute bottom-0 top-0 w-px bg-starry-violet-soft/15 left-4 lg:left-1/2 lg:-translate-x-1/2" />
+        {/* Drawn line (bright, scroll-driven) */}
+        <motion.div
+          style={{ height: reduceMotion ? "100%" : lineHeight }}
+          className="absolute top-0 w-px bg-starry-violet-soft/60 left-4 lg:left-1/2 lg:-translate-x-1/2"
+        />
+      </div>
 
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         {patchNotes.map((p, i) => (
@@ -124,6 +199,7 @@ export function PatchTimeline() {
             patch={p}
             index={i}
             active={activeIndex === i}
+            hit={hitIdx >= i}
             reduceMotion={reduceMotion}
             onClickPhone={() => openLightbox(p.image, p.alt)}
             cardRef={(el) => {
@@ -133,8 +209,6 @@ export function PatchTimeline() {
         ))}
 
         <CloserCard
-          active={activeIndex === patchNotes.length}
-          reduceMotion={reduceMotion}
           closerRef={(el) => {
             closerRef.current = el;
           }}
@@ -146,6 +220,8 @@ export function PatchTimeline() {
           <Lightbox src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} />
         )}
       </AnimatePresence>
+
+      <JumpToLatest />
     </section>
   );
 }
@@ -156,6 +232,7 @@ function PatchCard({
   patch,
   index,
   active,
+  hit,
   reduceMotion,
   onClickPhone,
   cardRef,
@@ -163,6 +240,7 @@ function PatchCard({
   patch: PatchEntry;
   index: number;
   active: boolean;
+  hit: boolean;
   reduceMotion: boolean;
   onClickPhone: () => void;
   cardRef: (el: HTMLElement | null) => void;
@@ -185,11 +263,12 @@ function PatchCard({
         localRef.current = el;
         cardRef(el);
       }}
+      id={index === 0 ? "patch-timeline-top" : undefined}
       data-index={index}
-      className="relative pl-12 lg:pl-0 first:pt-4 [&:not(:first-child)]:pt-[20vh]"
+      className="relative pl-12 lg:pl-0 first:pt-4 [&:not(:first-child)]:pt-[20vh] scroll-mt-24"
     >
       {/* Star node on the line — desktop center, mobile left edge */}
-      <StarNode active={active} reduceMotion={reduceMotion} />
+      <StarNode active={active} hit={hit} reduceMotion={reduceMotion} />
 
       <div className={`grid grid-cols-1 items-center gap-8 lg:gap-16 lg:grid-cols-[1fr_1fr]`}>
         {/* Phone column */}
@@ -239,10 +318,30 @@ function PatchCard({
 
 /* ---------------- Star node ---------------- */
 
-function StarNode({ active, reduceMotion, large = false }: { active: boolean; reduceMotion: boolean; large?: boolean }) {
+function StarNode({ active, hit, reduceMotion, large = false }: { active: boolean; hit: boolean; reduceMotion: boolean; large?: boolean }) {
   const baseSize = large ? 28 : 16;
   const activeSize = large ? 30 : 22;
   const size = reduceMotion ? baseSize : active ? activeSize : baseSize;
+
+  // Fire a one-shot glow pulse the moment the drawn line's bottom edge
+  // crosses this star's Y position. Driven by `hit` (computed in the
+  // parent from scrollYProgress), not by `active` (which is viewport
+  // centre based and therefore lagged a bit behind the line tip).
+  const [pulses, setPulses] = useState<number[]>([]);
+  const prevHit = useRef(hit);
+  useEffect(() => {
+    if (hit && !prevHit.current && !reduceMotion) {
+      const id = Date.now() + Math.random();
+      setPulses((p) => [...p, id]);
+      const t = setTimeout(() => {
+        setPulses((p) => p.filter((x) => x !== id));
+      }, 800);
+      prevHit.current = hit;
+      return () => clearTimeout(t);
+    }
+    prevHit.current = hit;
+  }, [hit, reduceMotion]);
+
   return (
     <span
       aria-hidden
@@ -254,6 +353,21 @@ function StarNode({ active, reduceMotion, large = false }: { active: boolean; re
         filter: active ? "drop-shadow(0 0 12px rgba(127, 200, 255, 0.85))" : "drop-shadow(0 0 4px rgba(127, 200, 255, 0.45))",
       }}
     >
+      {pulses.map((id) => (
+        <motion.span
+          key={id}
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-full"
+          initial={{ scale: 0.8, opacity: 0.9 }}
+          animate={{ scale: 4.2, opacity: 0 }}
+          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            background:
+              "radial-gradient(circle, rgba(127,200,255,0.75), rgba(127,200,255,0) 65%)",
+          }}
+        />
+      ))}
+
       <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden>
         <path
           d="M12 2c.4 4.5 1.6 7 4.5 8.2-2.9 1.3-4 3.8-4.5 8.3-.4-4.5-1.6-7-4.5-8.3C10.4 9 11.6 6.5 12 2Z"
@@ -325,20 +439,16 @@ function PhoneFrame({
 /* ---------------- Closer card ---------------- */
 
 function CloserCard({
-  active,
-  reduceMotion,
   closerRef,
 }: {
-  active: boolean;
-  reduceMotion: boolean;
   closerRef: (el: HTMLElement | null) => void;
 }) {
   return (
     <article
       ref={closerRef}
-      className="relative pt-[24vh] pl-12 text-left lg:pl-0 lg:text-center"
+      id="patch-notes-closer"
+      className="relative pt-[24vh] pl-12 text-left lg:pl-0 lg:text-center scroll-mt-24"
     >
-      <StarNode active={active} reduceMotion={reduceMotion} large />
       <div className="mx-auto max-w-xl">
         <p className="font-mono text-[13px] uppercase tracking-[0.22em] text-starry-blue-light">
           {patchNotesCloser.era}

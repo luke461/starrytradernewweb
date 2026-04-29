@@ -36,7 +36,7 @@ const cols = [
   {
     heading: "Legal",
     links: [
-      { label: "Our funding", href: "/our-funding" },
+      { label: "Funding", href: "/funding" },
       { label: "Terms", href: "/terms" },
       { label: "Privacy", href: "/privacy" },
     ],

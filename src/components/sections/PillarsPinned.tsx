@@ -54,11 +54,20 @@ export function PillarsPinned() {
           trigger: root,
           start: "top top",
           end: "bottom bottom",
-          // Higher scrub = weighted, cinematic feel. 0.3 felt jittery
-          // on fast scroll; 0.8 is the cinematic-but-still-responsive
-          // sweet spot for three-card pinned narratives.
-          scrub: 0.8,
+          // 0.6 keeps the cinematic weight of 0.8 but reduces lag during
+          // fast scroll so the timeline doesn't blur past pillars.
+          scrub: 0.6,
           invalidateOnRefresh: true,
+          // Snap so fast-scroll always lands on a pillar instead of
+          // halfway between two. snapTo points are the mid-points of
+          // each pillar's dwell window. delay slightly > scrub gives the
+          // catchup tween time to settle before snap fires.
+          snap: {
+            snapTo: [0.13, 0.45, 0.83],
+            duration: { min: 0.25, max: 0.6 },
+            delay: 0.18,
+            ease: "power1.inOut",
+          },
           onUpdate: (self) => {
             // +0.02 nudge so the active dot doesn't flicker exactly at
             // the 1/3 / 2/3 boundary while scrubbing across it.
@@ -68,25 +77,25 @@ export function PillarsPinned() {
         },
       });
 
-      // Timeline duration is normalised to 1.0 so positions read as
-      // fractions of the pinned scroll range. Each pillar gets a real
-      // dwell window — the old timing left pillar 3 fully visible only
-      // at the very last frame.
-      //   Pillar 1 dwell:    0.00 → 0.33
-      //   Transition 1 → 2:  0.33 → 0.48 (3% overlap)
-      //   Pillar 2 dwell:    0.48 → 0.66
-      //   Transition 2 → 3:  0.66 → 0.81 (3% overlap)
-      //   Pillar 3 dwell:    0.81 → 1.00
-      const FADE = 0.12;
+      // Timeline normalised to 1.0. Pillar 3 now has the LONGEST dwell
+      // (0.35 of timeline → ~154vh of scroll) because users fast-scroll
+      // most aggressively as they approach the end of the section, and
+      // the previous 0.28 dwell let pillar 3 flash past unseen.
+      //   Pillar 1 dwell:    0.00 → 0.25
+      //   Transition 1 → 2:  0.25 → 0.35
+      //   Pillar 2 dwell:    0.35 → 0.55
+      //   Transition 2 → 3:  0.55 → 0.65
+      //   Pillar 3 dwell:    0.65 → 1.00  ← longest, catches fast scroll
+      const FADE = 0.10;
 
-      tl.to(texts[0],  { opacity: 0, y: -20, duration: FADE }, 0.33)
-        .to(phones[0], { opacity: 0, scale: 0.96, duration: FADE }, 0.33)
-        .to(texts[1],  { opacity: 1, y: 0, duration: FADE }, 0.36)
-        .to(phones[1], { opacity: 1, scale: 1, duration: FADE }, 0.36)
-        .to(texts[1],  { opacity: 0, y: -20, duration: FADE }, 0.66)
-        .to(phones[1], { opacity: 0, scale: 0.96, duration: FADE }, 0.66)
-        .to(texts[2],  { opacity: 1, y: 0, duration: FADE }, 0.69)
-        .to(phones[2], { opacity: 1, scale: 1, duration: FADE }, 0.69);
+      tl.to(texts[0],  { opacity: 0, y: -20, duration: FADE }, 0.25)
+        .to(phones[0], { opacity: 0, scale: 0.96, duration: FADE }, 0.25)
+        .to(texts[1],  { opacity: 1, y: 0, duration: FADE }, 0.29)
+        .to(phones[1], { opacity: 1, scale: 1, duration: FADE }, 0.29)
+        .to(texts[1],  { opacity: 0, y: -20, duration: FADE }, 0.55)
+        .to(phones[1], { opacity: 0, scale: 0.96, duration: FADE }, 0.55)
+        .to(texts[2],  { opacity: 1, y: 0, duration: FADE }, 0.59)
+        .to(phones[2], { opacity: 1, scale: 1, duration: FADE }, 0.59);
 
       // Layout above us (hero) hydrates after we mount; recompute pin math.
       ScrollTrigger.refresh();
@@ -110,7 +119,7 @@ export function PillarsPinned() {
   // pin-spacer behavior, which can race with hydration when the component
   // swaps from FallbackPillars to the pinned layout on enable.
   return (
-    <section ref={containerRef} className="relative" style={{ height: "340vh" }}>
+    <section ref={containerRef} className="relative" style={{ height: "540vh" }}>
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         <div className="mx-auto grid w-full max-w-7xl grid-cols-[1.05fr_0.95fr] items-center gap-12 px-8">
           <div className="relative min-h-[74vh]">
@@ -167,41 +176,50 @@ function ProgressDots({ count, active }: { count: number; active: number }) {
 }
 
 function PillarText({ pillar, compact = false }: { pillar: Pillar; compact?: boolean }) {
-  // `compact` reduces vertical space so the full pillar block fits inside
-  // the pinned viewport without pushing the eyebrow off-screen on shorter
-  // laptops. The fallback stacked layout passes compact=false.
+  // `compact` is used inside the pinned viewport. Every dimension is
+  // tightened so even the tallest pillar (research, with the longest
+  // title + a multi-line insight + 3 capabilities) fits within the pin
+  // window without the eyebrow being clipped at the top on standard
+  // 1080p / 1440p laptop viewports.
   const titleClass = compact
-    ? "mt-3 font-display text-[24px] md:text-[26px] font-semibold leading-tight tracking-tight text-balance text-ink-primary"
+    ? "mt-2 font-display text-[20px] md:text-[22px] font-semibold leading-[1.15] tracking-tight text-balance text-ink-primary"
     : "mt-3 text-sub text-balance text-ink-primary";
-  const cardMt = compact ? "mt-4" : "mt-5";
-  const headlineMt = compact ? "mt-4" : "mt-5";
-  const headlineSize = compact ? "text-[17px]" : "text-[20px]";
-  const listMt = compact ? "mt-3" : "mt-4";
-  const listSpacing = compact ? "space-y-2" : "space-y-2.5";
+  const cardMt = compact ? "mt-3" : "mt-5";
+  const cardPad = compact ? "!p-3" : "!p-4";
+  const insightQuote = compact ? "text-[13px]" : "text-[14px]";
+  const headlineMt = compact ? "mt-3" : "mt-5";
+  const headlineSize = compact ? "text-[15px]" : "text-[20px]";
+  const listMt = compact ? "mt-2.5" : "mt-4";
+  const listSpacing = compact ? "space-y-1.5" : "space-y-2.5";
+  const capName = compact ? "text-[13px]" : "text-[14px]";
+  const capDesc = compact ? "text-[12px]" : "text-[13px]";
+  // Pillars with 5+ capabilities (research has 6) trim to 2 in compact
+  // mode so the column fits; the deep dive lives on /product anyway.
+  const capCount = compact && pillar.capabilities.length >= 5 ? 2 : 3;
 
   return (
     <div className="max-w-xl">
       <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-blue-light">Pillar {pillar.index}</p>
       <h3 className={titleClass}>{pillar.title}</h3>
       {pillar.clarifier && (
-        <p className="mt-2 text-[14px] italic text-starry-blue-light">{pillar.clarifier}</p>
+        <p className={`mt-2 ${compact ? "text-[13px]" : "text-[14px]"} italic text-starry-blue-light`}>{pillar.clarifier}</p>
       )}
 
-      <Card className={`${cardMt} !p-4 !bg-starry-deep/60`} glow="violet">
+      <Card className={`${cardMt} ${cardPad} !bg-starry-deep/60`} glow="violet">
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted">Research insight</p>
-        <p className="mt-2 text-[14px] italic leading-snug text-ink-soft">“{pillar.insight.quote}”</p>
+        <p className={`mt-2 ${insightQuote} italic leading-snug text-ink-soft`}>“{pillar.insight.quote}”</p>
         <p className="mt-2 font-mono text-caption text-ink-muted">{pillar.insight.source}</p>
       </Card>
 
       <p className={`${headlineMt} font-display ${headlineSize} font-semibold leading-snug text-ink-primary`}>{pillar.headline}</p>
 
       <ul className={`${listMt} ${listSpacing}`}>
-        {pillar.capabilities.slice(0, 3).map((c) => (
+        {pillar.capabilities.slice(0, capCount).map((c) => (
           <li key={c.name} className="flex gap-3">
             <span aria-hidden className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-starry-blue-light" />
             <div>
-              <p className="text-[14px] font-semibold text-ink-primary">{c.name}</p>
-              <p className="mt-0.5 text-[13px] leading-snug text-ink-soft">{c.description}</p>
+              <p className={`${capName} font-semibold text-ink-primary`}>{c.name}</p>
+              <p className={`mt-0.5 ${capDesc} leading-snug text-ink-soft`}>{c.description}</p>
             </div>
           </li>
         ))}

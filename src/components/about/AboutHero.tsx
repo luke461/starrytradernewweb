@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/decoration/Reveal";
 import { FreeConstellation } from "./FreeConstellation";
@@ -20,6 +21,24 @@ export function AboutHero() {
         style={{
           background:
             "radial-gradient(ellipse 55% 50% at 90% 0%, rgba(155, 143, 255, 0.22), transparent 65%), radial-gradient(ellipse 45% 40% at 10% 80%, rgba(127, 200, 255, 0.16), transparent 65%), var(--starry-surface-pale)",
+        }}
+      />
+
+      {/* Brand watermark. Anchored off the right edge, low opacity, mask-faded
+          on the left so it dissolves before reaching the headline column.
+          Hidden under md so mobile headlines aren't crowded. Decorative; the
+          wordmark already exists in the nav so this is aria-hidden. */}
+      <Image
+        src="/brand/starrytrader-logo-light.png"
+        alt=""
+        aria-hidden
+        width={600}
+        height={600}
+        priority
+        className="pointer-events-none absolute right-[-10%] top-1/2 hidden h-[60vh] max-h-[640px] w-auto -translate-y-1/2 select-none opacity-[0.22] md:block lg:right-[-6%]"
+        style={{
+          maskImage: "linear-gradient(to right, transparent 0%, #000 35%)",
+          WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 35%)",
         }}
       />
 

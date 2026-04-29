@@ -27,7 +27,7 @@ export default function TeamPage() {
             <SectionHeading
               eyebrow="The team"
               title="Built across two cities, by people who learned this the hard way."
-              subtitle="StarryTrader operates between Singapore and Chicago. The 13-hour timezone gap means somebody on our team is always thinking about how to make this better. We're a non-profit team of five, funded by grants and partners who share the mission."
+              subtitle="StarryTrader operates between Singapore and Chicago. The 13-hour timezone gap means somebody on our team is always thinking about how to make this better. We're a non-profit team of seven, built independently and open to partners who share the mission."
             />
           </Reveal>
         </div>
@@ -102,10 +102,13 @@ export default function TeamPage() {
         <div className="mx-auto max-w-5xl px-5 md:px-8">
           <Reveal>
             <div className="flex flex-col items-center justify-between gap-4 rounded-[20px] border border-white/[0.06] bg-section-fade px-7 py-6 sm:flex-row">
-              <p className="text-body text-ink-primary">We’re hiring. Curious?</p>
-              <Link href="/about#join" className="inline-flex items-center gap-1.5 text-[14px] text-starry-blue-light hover:text-starry-blue-soft">
-                See open roles <span aria-hidden>→</span>
-              </Link>
+              <p className="text-body text-ink-primary">Want to join the mission?</p>
+              <a
+                href="mailto:team@starrytrader.com?subject=Joining%20the%20mission"
+                className="inline-flex items-center gap-1.5 text-[14px] text-starry-blue-light hover:text-starry-blue-soft"
+              >
+                Write to the team <span aria-hidden>→</span>
+              </a>
             </div>
           </Reveal>
         </div>
@@ -116,7 +119,7 @@ export default function TeamPage() {
   );
 }
 
-function TeamCard({ slug, name, role, location, thinking, avatar, linkedin, large = false }: { slug: string; name: string; role: string; location: string; thinking: string; avatar?: string; linkedin?: string; large?: boolean }) {
+function TeamCard({ slug, name, role, location, thinking, avatar, linkedin, large = false }: { slug: string; name: string; role: string; location: string; thinking?: string; avatar?: string; linkedin?: string; large?: boolean }) {
   return (
     <div className="relative h-full">
       <Link href={`/team/${slug}`} className="group block h-full focus-visible:outline-none">
@@ -131,7 +134,9 @@ function TeamCard({ slug, name, role, location, thinking, avatar, linkedin, larg
               </p>
             </div>
           </div>
-          <p className={`mt-5 italic ${large ? "text-[16px]" : "text-[14px]"} leading-relaxed text-ink-soft`}>“{thinking}”</p>
+          {thinking && (
+            <p className={`mt-5 italic ${large ? "text-[16px]" : "text-[14px]"} leading-relaxed text-ink-soft`}>“{thinking}”</p>
+          )}
           <p className="mt-5 inline-flex items-center gap-1.5 text-[13px] text-starry-blue-light opacity-0 transition-opacity duration-200 group-hover:opacity-100">
             Read profile <span aria-hidden>→</span>
           </p>

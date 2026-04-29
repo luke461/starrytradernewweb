@@ -5,11 +5,19 @@ import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle } from "@/components/decoration/Sparkle";
 import { Reveal } from "@/components/decoration/Reveal";
-import { team } from "@/content/home";
+import { GracefulImage } from "@/components/decoration/GracefulImage";
+import { team, type TeamMember } from "@/content/home";
 
+/**
+ * Home page "Meet the team" teaser. Shows both cofounders as paired
+ * cards (Andre in Singapore, Emmanuel in Chicago), with a "see the full
+ * team" link beneath. Each card links to that founder's bio page.
+ */
 export function TeamTeaser() {
   const andre = team.find((m) => m.slug === "andre-liu");
-  if (!andre) return null;
+  const emmanuel = team.find((m) => m.slug === "co-founder");
+  if (!andre || !emmanuel) return null;
+  const founders = [andre, emmanuel];
 
   return (
     <section className="relative py-24 md:py-32">
@@ -22,40 +30,86 @@ export function TeamTeaser() {
           />
         </Reveal>
 
-        <Reveal delay={0.1}>
-          <Link href={`/team/${andre.slug}`} className="group mt-14 block focus-visible:outline-none">
-            <Card interactive glow="violet" className="!p-10">
-              <div className="flex flex-col items-start gap-7 md:flex-row md:items-center md:gap-10">
-                <Portrait name={andre.name} />
-                <div className="flex-1">
-                  <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-blue-light">Co-founder</p>
-                  <h3 className="mt-3 font-display text-[32px] font-semibold leading-tight text-ink-primary">
-                    {andre.name}
-                  </h3>
-                  <p className="mt-2 inline-flex items-center gap-2 text-body text-ink-soft">
-                    <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-starry-blue-light" />
-                    {andre.location}
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7">
+          {founders.map((member, i) => (
+            <Reveal key={member.slug} delay={0.08 + i * 0.06}>
+              <Link
+                href={`/team/${member.slug}`}
+                className="group block h-full focus-visible:outline-none"
+              >
+                <Card interactive glow="violet" className="h-full !p-8 md:!p-9">
+                  <div className="flex items-start gap-6">
+                    <Portrait member={member} />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-blue-light">
+                        Co-founder
+                      </p>
+                      <h3 className="mt-2 font-display text-[24px] font-semibold leading-tight text-ink-primary md:text-[26px]">
+                        {member.name}
+                      </h3>
+                      <p className="mt-1.5 inline-flex items-center gap-2 text-[14px] text-ink-soft">
+                        <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-starry-blue-light" />
+                        {member.location}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="mt-6 text-[16px] italic leading-relaxed text-ink-soft">
+                    “{member.thinking}”
                   </p>
-                  <p className="mt-5 max-w-xl italic text-body-lg text-ink-soft">“{andre.thinking}”</p>
-                  <p className="mt-6 inline-flex items-center gap-1.5 text-[14px] font-medium text-starry-blue-light transition-transform duration-200 group-hover:translate-x-1">
-                    Meet the team <span aria-hidden>→</span>
+                  <p className="mt-7 inline-flex items-center gap-1.5 text-[14px] font-medium text-starry-blue-light transition-transform duration-200 group-hover:translate-x-1">
+                    Read {member.name.split(" ")[0]}&rsquo;s story <span aria-hidden>→</span>
                   </p>
-                </div>
-              </div>
-            </Card>
-          </Link>
+                </Card>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={0.3}>
+          <div className="mt-10">
+            <Link
+              href="/team"
+              className="group/all inline-flex items-center gap-1.5 text-[14px] font-medium text-starry-blue-light transition-colors hover:text-starry-blue-soft"
+            >
+              See the full team
+              <span aria-hidden className="inline-block transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/all:translate-x-1">→</span>
+            </Link>
+          </div>
         </Reveal>
       </div>
     </section>
   );
 }
 
-function Portrait({ name }: { name: string }) {
-  const initial = name.replace(/[\[\]]/g, "").trim().charAt(0) || "★";
-  return (
-    <div className="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-starry-violet via-starry-violet-soft to-starry-blue-light text-[40px] font-display font-semibold text-white shadow-[0_20px_60px_-20px_rgba(107,91,255,0.6)]">
+/** Circular portrait. Uses the avatar webp when available; falls back
+ *  to the gradient-initial mark elsewhere on the site. */
+function Portrait({ member }: { member: TeamMember }) {
+  const initial = member.name.replace(/[\[\]]/g, "").trim().charAt(0) || "★";
+  const fallback = (
+    <span className="relative inline-flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-starry-violet via-starry-violet-soft to-starry-blue-light text-[36px] font-display font-semibold text-white shadow-[0_18px_44px_-18px_rgba(107,91,255,0.6)]">
       <span>{initial}</span>
-      <Sparkle size={20} className="absolute right-2 top-2" />
-    </div>
+      <Sparkle size={18} className="absolute right-2 top-2" />
+    </span>
+  );
+
+  if (!member.avatar) return fallback;
+
+  return (
+    <span className="relative inline-block h-24 w-24 shrink-0">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 scale-[1.4] rounded-full opacity-60 blur-xl"
+        style={{ background: "rgba(107,91,255,0.35)" }}
+      />
+      <GracefulImage
+        src={member.avatar}
+        alt={member.name}
+        width={192}
+        height={192}
+        className="h-24 w-24 rounded-full object-cover ring-1 ring-white/15 shadow-[0_18px_44px_-18px_rgba(11,16,36,0.7)]"
+        fallback={fallback}
+      />
+      <Sparkle size={16} className="absolute -right-1 -top-1" />
+    </span>
   );
 }

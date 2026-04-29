@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params;
   const member = team.find((m) => m.slug === slug);
   if (!member) return { title: "Team member not found" };
-  return { title: `${member.name}, ${member.role}`, description: member.thinking };
+  return { title: `${member.name}, ${member.role}`, description: member.thinking ?? `${member.name}, ${member.role} at StarryTrader.` };
 }
 
 export default async function TeamMemberPage({ params }: { params: Params }) {
@@ -48,7 +48,9 @@ export default async function TeamMemberPage({ params }: { params: Params }) {
                 <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-starry-blue-light" />
                 {member.location}
               </p>
-              <p className="mt-5 max-w-xl italic text-body-lg text-ink-soft">“{member.thinking}”</p>
+              {member.thinking && (
+                <p className="mt-5 max-w-xl italic text-body-lg text-ink-soft">“{member.thinking}”</p>
+              )}
             </div>
           </div>
         </div>

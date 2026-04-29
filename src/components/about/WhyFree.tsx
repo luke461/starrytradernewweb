@@ -50,6 +50,16 @@ export function WhyFree() {
             <span aria-hidden className="text-starry-blue-light">→</span>
           </Link>
         </Reveal>
+
+        <Reveal delay={0.45}>
+          <Link
+            href="/funding"
+            className="group/sec mt-6 inline-flex items-center gap-1.5 text-[14px] font-medium text-starry-blue-light transition-colors hover:text-starry-blue-soft"
+          >
+            Read about how we plan to be funded
+            <span aria-hidden className="inline-block transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/sec:translate-x-1">→</span>
+          </Link>
+        </Reveal>
       </div>
     </section>
   );

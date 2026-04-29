@@ -26,7 +26,7 @@ export default function CareersPage() {
         <div className="relative mx-auto max-w-3xl px-5 text-center md:px-8">
           <Sparkle size={28} className="mx-auto mb-6" />
           <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-blue-light">Careers</p>
-          <h1 className="mt-3 text-hero text-ink-primary">We&rsquo;re hiring.</h1>
+          <h1 className="mt-3 text-hero text-ink-primary">Build with us.</h1>
           <p className="mx-auto mt-6 max-w-xl text-body-lg text-ink-soft">
             We are a small team between Singapore and Chicago, building the financial education platform we wish we had at 19. If that sounds like a problem worth your time, we want to hear from you.
           </p>

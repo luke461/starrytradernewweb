@@ -54,13 +54,13 @@ export const aboutStory = {
   paragraphs: [
     "StarryTrader started in 2023 when two friends noticed something broken: the gap between wanting to invest and knowing how to invest was filled with noise, not education. Jargon-heavy platforms. Hype-driven content. Apps designed to get you trading before you understood what you were doing.",
     "We built StarryTrader to close that gap.",
-    "What began as a passion project between two people who loved programming and investing has grown into a team of five, an app on iOS and Android, and a community of learners across the globe. Along the way, we earned an Honourable Mention from Google out of 3,100 submissions, which told us the idea was resonating.",
+    "What began as a passion project between two people who loved programming and investing has grown into a team of seven, an app on iOS and Android, and a community of learners across the globe. Along the way, we earned an Honourable Mention from Google out of 3,100 submissions, which told us the idea was resonating.",
   ],
-  bridge: "Then we made a decision that changed what StarryTrader would become.",
+  bridge: "Free education was never a pivot. It was the point.",
   timeline: [
     { year: "2023", note: "Two friends. Two cities. One frustration." },
     { year: "2025", note: "Google Honourable Mention. 1 of 21, from 3,100 submissions." },
-    { year: "2026", note: "The pivot. Free for everyone." },
+    { year: "2026", note: "Team of seven. Built independently. Always free." },
   ],
 };
 
@@ -70,7 +70,7 @@ export const aboutWhyFree = {
   lead: [
     "Early on, we asked ourselves a question: if our goal is to make investing education accessible to every young adult who needs it, should there be a price tag on that?",
     "The answer was clear.",
-    "StarryTrader is now a non-profit educational platform. Every learning path, every research tool, every paper trading challenge is free and will stay free. We fund our work through grants, university partnerships, and sponsorships from organisations that share our mission, never through selling your data, promoting financial products, or taking commissions.",
+    "StarryTrader is a non-profit educational platform. Every learning path, every research tool, every paper trading challenge is free and will stay free. We fund our work through grants, university partnerships, and sponsorships from organisations that share our mission, never through selling your data, promoting financial products, or taking commissions.",
   ],
   commitmentsHeading: "Our commitments to you",
   commitments: [
