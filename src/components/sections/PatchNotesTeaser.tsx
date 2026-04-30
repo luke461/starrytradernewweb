@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/decoration/Reveal";
+import { Sparkle } from "@/components/decoration/Sparkle";
 import { GracefulImage } from "@/components/decoration/GracefulImage";
 import { patchNotes } from "@/content/patchNotes";
 
@@ -27,6 +28,10 @@ export function PatchNotesTeaser() {
             "radial-gradient(ellipse 55% 40% at 80% 15%, rgba(107,91,255,0.16), transparent 65%), radial-gradient(ellipse 40% 30% at 10% 90%, rgba(127,200,255,0.10), transparent 60%)",
         }}
       />
+
+      <Sparkle tone="violet-soft" size={22} className="pointer-events-none absolute right-[6%] top-20 hidden md:block" />
+      <Sparkle size={18} className="pointer-events-none absolute left-[8%] top-1/2 hidden lg:block" />
+      <Sparkle tone="violet" size={20} className="pointer-events-none absolute right-[14%] bottom-20 hidden md:block" />
 
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>

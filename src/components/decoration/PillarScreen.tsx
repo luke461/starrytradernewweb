@@ -7,9 +7,9 @@ import { PhoneScreenshot } from "./PhoneScreenshot";
  * JSX below. Shared by PillarsPinned (/product) and PillarsTeaser (/).
  */
 const PILLAR_SCREENSHOTS: Record<string, string | null> = {
-  learn: "/screenshots/learn-v2.webp",
-  research: "/screenshots/research-v2.webp",
-  compete: "/screenshots/compete-v3.webp",
+  learn: "/screenshots/learn-v3.png",
+  research: "/screenshots/research-v4.png",
+  compete: "/screenshots/compete-v4.png",
 };
 
 /**

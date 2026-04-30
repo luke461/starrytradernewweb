@@ -50,11 +50,9 @@ export function PillarsTeaser() {
               <Link href={p.href} className="group block focus-visible:outline-none">
                 <Card surface="light" interactive className="h-full !p-6 md:!p-7">
                   <div className="relative mb-7 flex justify-center">
-                    <div className="rounded-[24px] bg-starry-deep/95 p-3 shadow-[0_24px_48px_-20px_rgba(31,39,71,0.35)]">
-                      <PhoneMockup ariaLabel={`${p.name} screen preview`} tilt={false} className="!w-[180px]">
-                        <PillarScreen pillarId={p.id} />
-                      </PhoneMockup>
-                    </div>
+                    <PhoneMockup ariaLabel={`${p.name} screen preview`} tilt={false} className="!w-[180px]">
+                      <PillarScreen pillarId={p.id} />
+                    </PhoneMockup>
                   </div>
 
                   <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-violet-deep">Pillar {p.index}</p>
