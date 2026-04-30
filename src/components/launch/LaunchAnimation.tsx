@@ -348,11 +348,10 @@ const PhoneStandIn = ({ ref }: { ref: React.RefObject<HTMLDivElement | null> }) 
     className="relative w-[280px] sm:w-[320px] md:w-[300px] lg:w-[340px]"
     style={{ filter: "drop-shadow(0 40px 80px rgba(76, 63, 224, 0.25))" }}
   >
-    <div className="relative aspect-[9/19.5] rounded-[42px] border border-white/15 bg-gradient-to-b from-starry-soft to-starry-deep p-2.5">
-      <div className="absolute left-1/2 top-3 z-10 h-5 w-24 -translate-x-1/2 rounded-full bg-black/80" aria-hidden />
+    <div className="relative aspect-[9/19.5] rounded-[46px] bg-starry-soft p-[6px] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7),0_8px_24px_-8px_rgba(0,0,0,0.4)]">
       <div
         ref={ref}
-        className="relative flex h-full flex-col gap-2 overflow-hidden rounded-[34px] bg-starry-deep p-4 pt-12"
+        className="relative flex h-full flex-col gap-2 overflow-hidden rounded-[40px] bg-starry-deep p-4 pt-12"
       >
         <div data-launch-card className="surface-card !rounded-2xl !p-4">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-starry-blue-light">

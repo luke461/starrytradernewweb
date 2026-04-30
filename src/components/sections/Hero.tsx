@@ -2,17 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
 import { PhoneMockup } from "@/components/decoration/PhoneMockup";
 import { PhoneScreenshot } from "@/components/decoration/PhoneScreenshot";
+import { GracefulImage } from "@/components/decoration/GracefulImage";
 import { Sparkle } from "@/components/decoration/Sparkle";
 import { useUi } from "@/components/providers/UiProvider";
 import { hero, press } from "@/content/home";
+import { site } from "@/lib/site";
 
 // Drop a 9:19.5 portrait screenshot (e.g. 1080x2340) into /public/screenshots/
 // and set this to its path, e.g. "/screenshots/hero-watchlist.png".
 // Leave as null to render the stylised placeholder watchlist screen below.
-const HERO_SCREENSHOT: string | null = "/screenshots/hero-v2.webp";
+const HERO_SCREENSHOT: string | null = "/screenshots/hero-v3.png";
 
 export function Hero() {
   const { openContact } = useUi();
@@ -32,17 +33,74 @@ export function Hero() {
               Free, non-profit financial education for the generation finance forgot. Built on peer-reviewed research. Designed for the way they actually learn.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Button variant="primary" size="lg" onClick={() => openContact()} magnetic>
-                Get in touch
-              </Button>
-              <Link
-                href="/product"
-                className="group inline-flex items-center gap-1.5 text-[15px] text-ink-soft transition-colors hover:text-ink-primary"
-              >
-                See what we’re building
-                <span aria-hidden className="transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">→</span>
-              </Link>
+            <div className="mt-9">
+              <div className="flex flex-wrap items-center gap-3">
+                <a
+                  href={site.appLinks.appStore}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Download on the App Store"
+                  className="inline-flex transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-starry-blue-light focus-visible:outline-offset-4"
+                >
+                  <GracefulImage
+                    src="/images/store/app-store.webp"
+                    alt="Download on the App Store"
+                    width={200}
+                    height={60}
+                    priority
+                    className="h-[60px] w-auto"
+                    fallback={
+                      <span className="inline-flex h-[60px] items-center gap-2 rounded-xl bg-black px-5 text-[15px] font-semibold text-white ring-1 ring-white/10">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                          <path d="M16.5 1.5c.1 1.4-.5 2.7-1.4 3.7-1 1-2.3 1.7-3.6 1.6-.1-1.3.5-2.7 1.4-3.6.9-1 2.4-1.7 3.6-1.7Zm4.4 16.5c-.6 1.4-.9 2-1.7 3.2-1.1 1.7-2.6 3.7-4.5 3.7-1.7 0-2.2-1.1-4.5-1.1-2.3 0-2.8 1.1-4.5 1.1-1.9 0-3.4-1.9-4.5-3.5C-.4 16.7-1 11.5 1 8.4 2.5 6.2 4.7 4.9 6.8 4.9c1.7 0 3 .9 4.4.9 1.4 0 2.2-.9 4.3-.9 1.6 0 3.3.9 4.5 2.4-3.9 2.1-3.3 7.7 1.0 8.7Z" />
+                        </svg>
+                        App Store
+                      </span>
+                    }
+                  />
+                </a>
+                <a
+                  href={site.appLinks.googlePlay}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Get it on Google Play"
+                  className="inline-flex transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-starry-blue-light focus-visible:outline-offset-4"
+                >
+                  <GracefulImage
+                    src="/images/store/google-play.webp"
+                    alt="Get it on Google Play"
+                    width={200}
+                    height={60}
+                    priority
+                    className="h-[60px] w-auto"
+                    fallback={
+                      <span className="inline-flex h-[60px] items-center gap-2 rounded-xl bg-black px-5 text-[15px] font-semibold text-white ring-1 ring-white/10">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                          <path d="M3.6 1.5c-.4.4-.6 1-.6 1.7v17.6c0 .7.2 1.3.6 1.7l11.1-11-11.1-10Zm12.5 11.4 3.6 2c1.1.6 1.1 1.7 0 2.3l-3.4 1.9-3.6-3.6 3.4-2.6Zm-1.4-1.4L4.6 22.4l9.5-5.4-2.4-3.5Zm0-2.0L11.7 6 4.6 1.6l10.1 7.9Z" />
+                        </svg>
+                        Google Play
+                      </span>
+                    }
+                  />
+                </a>
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => openContact()}
+                  className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/[0.03] px-5 text-[14px] font-medium text-ink-soft transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-[1px] hover:border-white/30 hover:bg-white/[0.06] hover:text-ink-primary focus-visible:outline-2 focus-visible:outline-starry-blue-light focus-visible:outline-offset-2"
+                >
+                  Get in touch
+                </button>
+                <Link
+                  href="/product"
+                  className="group inline-flex h-11 items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.03] px-5 text-[14px] font-medium text-ink-soft transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-[1px] hover:border-white/30 hover:bg-white/[0.06] hover:text-ink-primary focus-visible:outline-2 focus-visible:outline-starry-blue-light focus-visible:outline-offset-2"
+                >
+                  See what we&rsquo;re building
+                  <span aria-hidden className="transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">→</span>
+                </Link>
+              </div>
             </div>
 
             <Sparkle tone="violet" size={28} className="absolute -left-6 top-32 hidden md:block" />
@@ -53,7 +111,7 @@ export function Hero() {
             <Sparkle size={32} className="absolute -left-2 top-6 z-10" />
             <Sparkle tone="violet" size={20} className="absolute right-2 top-32 z-10" />
             <Sparkle tone="violet-soft" size={26} className="absolute bottom-10 -left-2 z-10" />
-            <PhoneMockup ariaLabel="StarryTrader Watchlist AI Summary card">
+            <PhoneMockup ariaLabel="StarryTrader Watchlist AI Summary card" bezel="glass">
               {HERO_SCREENSHOT ? (
                 <PhoneScreenshot src={HERO_SCREENSHOT} alt="StarryTrader app screen" priority />
               ) : (
@@ -144,7 +202,7 @@ function TrustStrip() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Read the ${p.publication} feature`}
-              className="group flex h-[96px] w-full items-center justify-center rounded-xl bg-white px-6 ring-1 ring-white/15 shadow-[0_10px_28px_-14px_rgba(0,0,0,0.5)] transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-14px_rgba(0,0,0,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-starry-blue-light"
+              className="group flex h-[96px] w-full items-center justify-center rounded-2xl bg-white px-6 ring-1 ring-white/15 shadow-[0_10px_28px_-14px_rgba(0,0,0,0.5)] transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-14px_rgba(0,0,0,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-starry-blue-light"
             >
               {p.logoPath && p.logoWidth && p.logoHeight ? (
                 <Image

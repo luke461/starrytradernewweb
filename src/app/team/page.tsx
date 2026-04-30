@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle, Constellation } from "@/components/decoration/Sparkle";
 import { Reveal } from "@/components/decoration/Reveal";
+import { PlaneArc } from "@/components/decoration/PlaneArc";
 import { PartnerLogo } from "@/components/sections/HomePartners";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { team, appPartners } from "@/content/home";
@@ -20,8 +21,9 @@ export default function TeamPage() {
 
   return (
     <div className="relative">
-      <section className="relative overflow-hidden pt-24 pb-16 md:pt-32 md:pb-20">
+      <section className="relative overflow-hidden pt-24 pb-12 md:pt-32 md:pb-12">
         <div className="absolute inset-0 bg-hero-cosmic opacity-90" aria-hidden />
+
         <div className="relative mx-auto max-w-5xl px-5 md:px-8">
           <Reveal>
             <SectionHeading
@@ -31,9 +33,13 @@ export default function TeamPage() {
             />
           </Reveal>
         </div>
+
+        <div className="relative mx-auto mt-12 max-w-7xl px-5 sm:mt-16 md:mt-20 md:px-8">
+          <PlaneArc variant="team" />
+        </div>
       </section>
 
-      <section className="relative py-12 md:py-20">
+      <section className="relative py-8 md:py-12">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {founders.map((m, i) => (
@@ -103,12 +109,12 @@ export default function TeamPage() {
           <Reveal>
             <div className="flex flex-col items-center justify-between gap-4 rounded-[20px] border border-white/[0.06] bg-section-fade px-7 py-6 sm:flex-row">
               <p className="text-body text-ink-primary">Want to join the mission?</p>
-              <a
-                href="mailto:team@starrytrader.com?subject=Joining%20the%20mission"
-                className="inline-flex items-center gap-1.5 text-[14px] text-starry-blue-light hover:text-starry-blue-soft"
+              <Link
+                href="/careers"
+                className="inline-flex items-center gap-1.5 text-[14px] text-starry-blue-light transition-colors hover:text-starry-blue-soft focus-visible:outline-2 focus-visible:outline-starry-blue-light focus-visible:outline-offset-2"
               >
-                Write to the team <span aria-hidden>→</span>
-              </a>
+                Learn more <span aria-hidden>→</span>
+              </Link>
             </div>
           </Reveal>
         </div>

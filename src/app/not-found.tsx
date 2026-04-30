@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Sparkle, Constellation } from "@/components/decoration/Sparkle";
 import { Button } from "@/components/ui/Button";
@@ -7,6 +8,17 @@ export default function NotFound() {
     <section className="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-5 py-24">
       <div className="absolute inset-0 bg-hero-cosmic" aria-hidden />
       <div className="grain absolute inset-0" aria-hidden />
+
+      <Image
+        src="/brand/starrytrader-logo-light.png"
+        alt=""
+        aria-hidden
+        width={700}
+        height={700}
+        priority
+        className="pointer-events-none absolute left-1/2 top-1/2 h-auto w-[80vw] max-w-[600px] -translate-x-1/2 -translate-y-1/2 select-none opacity-[0.10]"
+      />
+
       <div className="relative mx-auto max-w-xl text-center">
         <div className="relative mx-auto mb-10 inline-block">
           <Sparkle size={56} />

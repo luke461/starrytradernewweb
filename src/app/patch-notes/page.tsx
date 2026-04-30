@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Reveal } from "@/components/decoration/Reveal";
 import { PatchTimeline } from "@/components/patch-notes/PatchTimeline";
 
@@ -13,6 +14,20 @@ export default function PatchNotesPage() {
     <article className="relative bg-starry-deep">
       <section className="relative overflow-hidden pt-24 pb-12 md:pt-32 md:pb-16">
         <div className="absolute inset-0 bg-hero-cosmic opacity-90" aria-hidden />
+
+        <Image
+          src="/brand/starrytrader-logo-light.png"
+          alt=""
+          aria-hidden
+          width={600}
+          height={600}
+          className="pointer-events-none absolute right-[-12%] top-1/2 hidden h-auto w-[32vw] max-w-[420px] -translate-y-1/2 select-none opacity-[0.14] md:block lg:right-[-6%]"
+          style={{
+            maskImage: "linear-gradient(to right, transparent 0%, #000 45%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 45%)",
+          }}
+        />
+
         <div className="relative mx-auto max-w-3xl px-5 text-center md:px-8">
           <Reveal>
             <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-starry-blue-light">

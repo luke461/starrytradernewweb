@@ -27,7 +27,7 @@ export type Partner = {
 
 export const partners: Partner[] = [
   {
-    name: "MooMoo",
+    name: "Moomoo",
     logoPath: "/images/partners/moomoo-trimmed.webp",
     url: "https://www.moomoo.com",
     isReal: true,
@@ -36,11 +36,11 @@ export const partners: Partner[] = [
     region: "Asia-Pacific",
     shortDescription: "Brokerage partner for paper-trading infrastructure and US market data.",
     whoTheyAre:
-      "MooMoo is a digital brokerage operating across the United States, Singapore, Australia, Japan, Malaysia, and Canada. They focus on commission-free trading and structured market data.",
+      "Moomoo is a digital brokerage operating across the United States, Singapore, Australia, Japan, Malaysia, and Canada. They focus on commission-free trading and structured market data.",
     whatTheyDo:
-      "MooMoo provides paper-trading infrastructure and access to real-time US market data. StarryTrader integrates this so learners can practice without funding a real account.",
+      "Moomoo provides paper-trading infrastructure and access to real-time US market data. StarryTrader integrates this so learners can practice without funding a real account.",
     whyWePartner:
-      "MooMoo's structured market data and paper-trading capability let StarryTrader teach without exposing learners to real-money risk. Their educational tooling matches the level of plain-English clarity we ask of every partner.",
+      "Moomoo's structured market data and paper-trading capability let StarryTrader teach without exposing learners to real-money risk. Their educational tooling matches the level of plain-English clarity we ask of every partner.",
     whatLearnersGet:
       "Access to a paper-trading environment that uses real US market data. The ability to test investment strategies before they ever fund a real brokerage account. A clear bridge from the StarryTrader curriculum to live markets when learners are ready.",
     logoWidth: 436,

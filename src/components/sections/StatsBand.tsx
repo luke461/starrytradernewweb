@@ -2,12 +2,18 @@
 
 import { CountUp } from "@/components/decoration/CountUp";
 import { Reveal } from "@/components/decoration/Reveal";
+import { Sparkle } from "@/components/decoration/Sparkle";
 import { stats } from "@/content/home";
 
 export function StatsBand() {
   return (
     <section className="relative py-20 md:py-24">
-      <div className="mx-auto max-w-7xl rounded-[28px] border border-white/[0.06] bg-section-fade px-5 py-14 md:px-12">
+      <Sparkle tone="violet-soft" size={20} className="pointer-events-none absolute left-[6%] top-12 hidden md:block" />
+      <Sparkle size={24} className="pointer-events-none absolute right-[8%] bottom-10 hidden md:block" />
+
+      <div className="relative mx-auto max-w-7xl rounded-[28px] border border-white/[0.06] bg-section-fade px-5 py-14 md:px-12">
+        <Sparkle tone="violet" size={18} className="pointer-events-none absolute right-6 top-6 hidden md:block" />
+
         <Reveal>
           <p className="font-mono text-[12px] uppercase tracking-[0.2em] text-starry-blue-light">Us in numbers</p>
         </Reveal>

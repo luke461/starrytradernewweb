@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/decoration/Reveal";
+import { Sparkle } from "@/components/decoration/Sparkle";
 import { reviews, type Review } from "@/content/home";
 
 const toneClasses: Record<Review["tone"], string> = {
@@ -20,7 +21,11 @@ const ringClasses: Record<Review["tone"], string> = {
 export function Reviews() {
   return (
     <section className="relative py-28 md:py-36">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
+      <Sparkle tone="violet" size={26} className="pointer-events-none absolute left-[7%] top-24 hidden md:block" />
+      <Sparkle size={20} className="pointer-events-none absolute right-[12%] top-32 hidden md:block" />
+      <Sparkle tone="violet-soft" size={22} className="pointer-events-none absolute left-[18%] bottom-32 hidden lg:block" />
+
+      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <SectionHeading
             eyebrow="What users are saying"

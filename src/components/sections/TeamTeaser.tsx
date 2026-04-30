@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle } from "@/components/decoration/Sparkle";
 import { Reveal } from "@/components/decoration/Reveal";
 import { GracefulImage } from "@/components/decoration/GracefulImage";
+import { PlaneArc } from "@/components/decoration/PlaneArc";
 import { team, type TeamMember } from "@/content/home";
 
 /**
@@ -20,7 +21,7 @@ export function TeamTeaser() {
   const founders = [andre, emmanuel];
 
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative py-28 md:py-36">
       <div className="mx-auto max-w-6xl px-5 md:px-8">
         <Reveal>
           <SectionHeading
@@ -30,7 +31,11 @@ export function TeamTeaser() {
           />
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7">
+        <div className="my-14 sm:my-20 md:my-24">
+          <PlaneArc variant="home" />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7">
           {founders.map((member, i) => (
             <Reveal key={member.slug} delay={0.08 + i * 0.06}>
               <Link

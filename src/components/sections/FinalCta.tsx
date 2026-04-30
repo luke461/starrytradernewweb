@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Sparkle } from "@/components/decoration/Sparkle";
 import { Reveal } from "@/components/decoration/Reveal";
@@ -14,7 +15,7 @@ import { site } from "@/lib/site";
 export function FinalCta() {
   const { openContact } = useUi();
   return (
-    <section className="relative overflow-hidden py-28 md:py-36">
+    <section className="relative overflow-hidden py-24 md:py-32">
       <div
         className="absolute inset-0"
         style={{
@@ -23,6 +24,26 @@ export function FinalCta() {
         }}
         aria-hidden
       />
+
+      {/* Logo watermark anchored upper-left, faint, with right-edge fade */}
+      <Image
+        src="/brand/starrytrader-logo-light.png"
+        alt=""
+        aria-hidden
+        width={500}
+        height={500}
+        className="pointer-events-none absolute left-[-8%] top-[-4%] hidden h-auto w-[28vw] max-w-[360px] select-none opacity-[0.10] md:block"
+        style={{
+          maskImage: "linear-gradient(to bottom right, #000 20%, transparent 75%)",
+          WebkitMaskImage: "linear-gradient(to bottom right, #000 20%, transparent 75%)",
+        }}
+      />
+
+      {/* Decorative sparkles spread across the section */}
+      <Sparkle tone="violet-soft" size={20} className="pointer-events-none absolute right-[10%] top-16 hidden md:block" />
+      <Sparkle size={18} className="pointer-events-none absolute left-[12%] top-1/2 hidden lg:block" />
+      <Sparkle tone="violet" size={22} className="pointer-events-none absolute right-[8%] bottom-24 hidden md:block" />
+
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <div className="text-center">
           <Sparkle tone="violet" size={28} className="mx-auto mb-6" />
@@ -33,7 +54,7 @@ export function FinalCta() {
 
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
           <Reveal delay={0.05}>
-            <div className="group relative h-full overflow-hidden rounded-[24px] border border-starry-violet-soft/25 bg-white p-8 shadow-[0_18px_40px_-22px_rgba(31,39,71,0.18),0_1px_2px_rgba(31,39,71,0.04)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-starry-violet/40 hover:shadow-[0_30px_56px_-26px_rgba(76,63,224,0.30)]">
+            <div className="group relative h-full overflow-hidden rounded-[20px] border border-starry-violet-soft/25 bg-white p-8 shadow-[0_18px_40px_-22px_rgba(31,39,71,0.18),0_1px_2px_rgba(31,39,71,0.04)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-starry-violet/40 hover:shadow-[0_30px_56px_-26px_rgba(76,63,224,0.30)]">
               <h3 className="font-display text-[28px] font-semibold leading-tight text-ink-on-light">
                 For learners.
               </h3>
@@ -49,9 +70,9 @@ export function FinalCta() {
                   className="inline-flex transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5"
                 >
                   <GracefulImage
-                    src="/images/store/app-store.svg"
+                    src="/images/store/app-store.webp"
                     alt="Download on the App Store"
-                    width={170}
+                    width={188}
                     height={56}
                     className="h-14 w-auto"
                     fallback={
@@ -72,9 +93,9 @@ export function FinalCta() {
                   className="inline-flex transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5"
                 >
                   <GracefulImage
-                    src="/images/store/google-play.svg"
+                    src="/images/store/google-play.webp"
                     alt="Get it on Google Play"
-                    width={190}
+                    width={188}
                     height={56}
                     className="h-14 w-auto"
                     fallback={
@@ -92,7 +113,7 @@ export function FinalCta() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <div className="group relative h-full overflow-hidden rounded-[24px] border border-starry-violet-soft/25 bg-white p-8 shadow-[0_18px_40px_-22px_rgba(31,39,71,0.18),0_1px_2px_rgba(31,39,71,0.04)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-starry-violet/40 hover:shadow-[0_30px_56px_-26px_rgba(76,63,224,0.30)]">
+            <div className="group relative h-full overflow-hidden rounded-[20px] border border-starry-violet-soft/25 bg-white p-8 shadow-[0_18px_40px_-22px_rgba(31,39,71,0.18),0_1px_2px_rgba(31,39,71,0.04)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-starry-violet/40 hover:shadow-[0_30px_56px_-26px_rgba(76,63,224,0.30)]">
               <h3 className="font-display text-[28px] font-semibold leading-tight text-ink-on-light">
                 Join the community.
               </h3>
@@ -128,7 +149,7 @@ export function FinalCta() {
           </Reveal>
 
           <Reveal delay={0.15}>
-            <div className="group relative h-full overflow-hidden rounded-[24px] border border-starry-violet-soft/25 bg-white p-8 shadow-[0_18px_40px_-22px_rgba(31,39,71,0.18),0_1px_2px_rgba(31,39,71,0.04)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-starry-violet/40 hover:shadow-[0_30px_56px_-26px_rgba(76,63,224,0.30)]">
+            <div className="group relative h-full overflow-hidden rounded-[20px] border border-starry-violet-soft/25 bg-white p-8 shadow-[0_18px_40px_-22px_rgba(31,39,71,0.18),0_1px_2px_rgba(31,39,71,0.04)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-starry-violet/40 hover:shadow-[0_30px_56px_-26px_rgba(76,63,224,0.30)]">
               <h3 className="font-display text-[28px] font-semibold leading-tight text-ink-on-light">
                 For institutions.
               </h3>
