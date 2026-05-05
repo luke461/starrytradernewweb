@@ -10,15 +10,15 @@ import { PlaneArc } from "@/components/decoration/PlaneArc";
 import { team, type TeamMember } from "@/content/home";
 
 /**
- * Home page "Meet the team" teaser. Shows both cofounders as paired
- * cards (Andre in Singapore, Emmanuel in Chicago), with a "see the full
- * team" link beneath. Each card links to that founder's bio page.
+ * Home page "Meet the team" teaser. Renders every member flagged
+ * `founder: true` in src/content/home.ts as a card, with a
+ * "see the full team" link beneath. Each card links to that founder's
+ * bio page. Layout adapts to one or two founders.
  */
 export function TeamTeaser() {
-  const andre = team.find((m) => m.slug === "andre-liu");
-  const emmanuel = team.find((m) => m.slug === "co-founder");
-  if (!andre || !emmanuel) return null;
-  const founders = [andre, emmanuel];
+  const founders = team.filter((m) => m.founder);
+  if (founders.length === 0) return null;
+  const isPair = founders.length >= 2;
 
   return (
     <section className="relative py-28 md:py-36">
@@ -35,7 +35,13 @@ export function TeamTeaser() {
           <PlaneArc variant="home" />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7">
+        <div
+          className={
+            isPair
+              ? "grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7"
+              : "mx-auto grid max-w-xl grid-cols-1 gap-6"
+          }
+        >
           {founders.map((member, i) => (
             <Reveal key={member.slug} delay={0.08 + i * 0.06}>
               <Link

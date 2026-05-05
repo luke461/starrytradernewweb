@@ -47,7 +47,7 @@ export default function LetterFromFoundersPage() {
                 The full letter is being written.
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-body text-ink-soft">
-                Andre and his co-founder are putting words to the decision: why StarryTrader made the pivot, what that changes, and what it doesn&rsquo;t. Follow the announcement on Instagram, or come back here in a few weeks.
+                Andre is putting words to the decision: why StarryTrader made the pivot, what that changes, and what it doesn&rsquo;t. Follow the announcement on Instagram, or come back here in a few weeks.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Button variant="primary" size="md" href={site.social.instagram} external>
