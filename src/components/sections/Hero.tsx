@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Phone3D } from "@/components/decoration/Phone3D";
 import { PhoneMockup } from "@/components/decoration/PhoneMockup";
 import { PhoneScreenshot } from "@/components/decoration/PhoneScreenshot";
 import { GracefulImage } from "@/components/decoration/GracefulImage";
@@ -111,13 +112,19 @@ export function Hero() {
             <Sparkle size={32} className="absolute -left-2 top-6 z-10" />
             <Sparkle tone="violet" size={20} className="absolute right-2 top-32 z-10" />
             <Sparkle tone="violet-soft" size={26} className="absolute bottom-10 -left-2 z-10" />
-            <PhoneMockup ariaLabel="StarryTrader Watchlist AI Summary card" bezel="glass">
-              {HERO_SCREENSHOT ? (
-                <PhoneScreenshot src={HERO_SCREENSHOT} alt="StarryTrader app screen" priority />
-              ) : (
-                <WatchlistScreen />
-              )}
-            </PhoneMockup>
+            <Phone3D
+              screenshot={HERO_SCREENSHOT ?? undefined}
+              ariaLabel="StarryTrader Watchlist AI Summary card"
+              fallback={
+                <PhoneMockup ariaLabel="StarryTrader Watchlist AI Summary card" bezel="glass">
+                  {HERO_SCREENSHOT ? (
+                    <PhoneScreenshot src={HERO_SCREENSHOT} alt="StarryTrader app screen" priority />
+                  ) : (
+                    <WatchlistScreen />
+                  )}
+                </PhoneMockup>
+              }
+            />
           </div>
         </div>
 
