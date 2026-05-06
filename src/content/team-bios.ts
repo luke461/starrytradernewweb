@@ -17,10 +17,7 @@ export const teamBios: Record<string, TeamBio> = {
   "andre-liu": {
     slug: "andre-liu",
     paragraphs: [
-      "Andre started programming in middle school. By the time he enlisted for National Service in Singapore, he had already shipped websites and joined hackathons. The bunk became his unlikely co-working space.",
-      "The idea for StarryTrader came from watching his friends bet money on stocks they didn’t understand. When Andre asked why they never read the financial news, the answer was three words long. ‘Too many words.’ He took that seriously. With a co-founder, he started building an app that summarises financial news in plain English and turns market literacy into a daily habit.",
-      "StarryTrader earned an honourable mention in Google’s Build with Gemini competition (1 of 21 selected from 3,100 submissions). Andre is now in his first year of Computer Science at NUS, with a minor in Mathematics, and he is still building. He reads widely, boulders, and wants to go deep into Natural Language Processing long-term.",
-      "Featured in NUS Computing News and The Daily Northwestern.",
+      "Andre Liu is the co-founder of StarryTrader, a financial platform with a growing user base that helps investors understand market news more efficiently. He focuses on product direction, user growth, and partnerships, working with financial firms to expand the platform’s reach. Alongside building StarryTrader, he studies Computer Science at the National University of Singapore.",
     ],
     responsibilities: [
       "Product strategy and the long-term research direction.",
