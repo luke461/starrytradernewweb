@@ -75,6 +75,15 @@ export type TeamMember = {
   // Drop a square image into /public/team/ and set this to the path,
   // e.g. "/team/andre-liu.jpg". Leave undefined to use the initial-letter portrait.
   avatar?: string;
+  /** Short 2-3 sentence bio for the org chart card. TODO_BIO placeholder
+   *  is fine; do not fabricate. */
+  summary?: string;
+  /** Optional skill / affiliation chips. Only populate from data that
+   *  actually exists in source material (don't guess). */
+  tags?: string[];
+  /** Slug of the person this member reports to. Drives the mobile
+   *  "Reports to: …" caption. CEO has no value. */
+  reportsTo?: string;
 };
 
 export const hero = {
@@ -253,19 +262,22 @@ export const team: TeamMember[] = [
   {
     slug: "andre-liu",
     name: "Andre Liu",
-    role: "Co-founder and CEO",
+    role: "Co-Founder & CEO",
     location: "Singapore",
     city: "Singapore",
     thinking: "My friends said the news had too many words. So I built something with fewer.",
     socials: { linkedin: "https://www.linkedin.com/in/andre-liu-009733184", email: "andre@starrytrader.com" },
     founder: true,
     avatar: "/team/andre.webp",
+    summary:
+      "Andre Liu is the co-founder of StarryTrader, a financial platform with a growing user base that helps investors understand market news more efficiently. He focuses on product direction, user growth, and partnerships, working with financial firms to expand the platform's reach. Alongside building StarryTrader, he studies Computer Science at the National University of Singapore.",
+    tags: ["Computer Science", "NUS", "Mathematics"],
   },
   // Temporarily hidden — uncomment this block to restore Emmanuel as co-founder.
   // {
   //   slug: "co-founder",
   //   name: "Emmanuel",
-  //   role: "Co-founder and CEO",
+  //   role: "Co-Founder & CEO",
   //   location: "Chicago, USA",
   //   city: "Chicago",
   //   thinking: "Building the app I wish existed when I lost my first $500.",
@@ -273,11 +285,84 @@ export const team: TeamMember[] = [
   //   avatar: "/team/emmanuel.webp",
   //   socials: { linkedin: "https://www.linkedin.com/in/emmanuel-q-carter" },
   // },
-  { slug: "ava", name: "Ava", role: "Head of Communications and Partnerships", location: "Chicago, USA", city: "Chicago", avatar: "/team/ava.webp", socials: { linkedin: "https://www.linkedin.com/in/ava-luo-757940243" } },
-  { slug: "luke", name: "Luke", role: "Digital Marketing Manager", location: "Singapore", city: "Singapore", avatar: "/team/luke.webp", socials: { linkedin: "https://www.linkedin.com/in/luke-carter-931916267" } },
-  { slug: "lucas", name: "Lucas", role: "COO and Head of Product", location: "Australia", city: "Other", avatar: "/team/lucas.webp", socials: { linkedin: "https://www.linkedin.com/in/lucas-cheah-158a12358" } },
-  { slug: "sinclair", name: "Sinclair", role: "Software Engineer", location: "Singapore", city: "Singapore", avatar: "/team/sinclair.webp", socials: { linkedin: "https://www.linkedin.com/in/sinclair-ng-sn" } },
-  { slug: "yuan-feng", name: "Yuan Feng", role: "Software Engineer", location: "Singapore", city: "Singapore", avatar: "/team/yuan-feng.webp", socials: { linkedin: "https://www.linkedin.com/in/kew-yuan-feng-0879aa226" } },
+  {
+    slug: "lucas",
+    name: "Lucas Cheah",
+    role: "Chief Operating Officer (COO) & Head of Product",
+    location: "Australia",
+    city: "Other",
+    avatar: "/team/lucas.webp",
+    socials: { linkedin: "https://www.linkedin.com/in/lucas-cheah-158a12358" },
+    summary:
+      "Lucas Cheah is the COO and Head of Product at StarryTrader, where he leads product strategy and operations. A finance and economics student, Lucas brings a rare combination of entrepreneurial drive and institutional credibility with experience spanning investment banking, venture capital, and YouTube partnerships. Outside of work, Lucas enjoys reading, playing basketball, video games, and spending time with his loved ones.",
+    tags: ["Finance", "Investment Banking", "Venture Capital"],
+    reportsTo: "andre-liu",
+  },
+  {
+    slug: "luke",
+    name: "Luke Carter",
+    role: "Digital Marketing Manager",
+    location: "Singapore",
+    city: "Singapore",
+    avatar: "/team/luke.webp",
+    socials: { linkedin: "https://www.linkedin.com/in/luke-carter-931916267" },
+    summary:
+      "Luke Carter is the Digital Marketing Manager at StarryTrader, specializing in web design and online brand strategy. He focuses on creating compelling, user-friendly digital experiences that attract and retain investors. Alongside this role, he is matriculating into the National University of Singapore to study Business and majoring in Finance. Luke is an avid photographer and basketball player.",
+    tags: ["NUS", "Business", "Finance"],
+    reportsTo: "lucas",
+  },
+  {
+    slug: "ava",
+    name: "Ava Luo",
+    role: "Head of Comms & Partnerships",
+    location: "Chicago, USA",
+    city: "Chicago",
+    avatar: "/team/ava.webp",
+    socials: { linkedin: "https://www.linkedin.com/in/ava-luo-757940243" },
+    summary:
+      "Ava Luo is the Head of Communications and Partnerships at StarryTrader. She is currently a student at Northwestern University studying journalism and economics with a minor in data science. Outside of school and StarryTrader, she enjoys smelling perfumes at department stores, baking her food cravings, and going on sidequests.",
+    tags: ["Northwestern", "Journalism", "Economics"],
+    reportsTo: "lucas",
+  },
+  {
+    slug: "zen",
+    name: "Zen Phang",
+    role: "Strategy & Ops Associate",
+    location: "Singapore",
+    city: "Singapore",
+    avatar: "/team/zen.jpg",
+    socials: { linkedin: "https://www.linkedin.com/in/zen-phang-212173326" },
+    summary:
+      "Zen Phang is a Strategy and Operations associate at StarryTrader, also managing the company Telegram and TikTok channels. He is a Business Analytics student at the National University of Singapore and NUS College, with a keen interest in high finance and a great appetite for learning. Zen enjoys running and road cycling, and is trying (not too successfully) to get into tennis.",
+    tags: ["NUS", "NUS College", "Business Analytics"],
+    reportsTo: "lucas",
+  },
+  {
+    slug: "sinclair",
+    name: "Sinclair Ng",
+    role: "Software Engineer",
+    location: "Singapore",
+    city: "Singapore",
+    avatar: "/team/sinclair.webp",
+    socials: { linkedin: "https://www.linkedin.com/in/sinclair-ng-sn" },
+    summary:
+      "Sinclair Ng is a Software Engineer at StarryTrader, where he builds and maintains software products and works on backend infrastructure to keep things running smoothly behind the scenes. Currently studying Computer Science at the National University of Singapore, he brings both academic knowledge and hands-on experience to everything he works on. He enjoys tackling complex technical challenges and is passionate about writing clean, reliable code that makes a real difference. Outside of work and studies, you'll likely find him exploring a new destination or unwinding with a good show!",
+    tags: ["NUS", "Computer Science", "Backend"],
+    reportsTo: "andre-liu",
+  },
+  {
+    slug: "yuan-feng",
+    name: "Kew Yuan Feng",
+    role: "Software Engineer",
+    location: "Singapore",
+    city: "Singapore",
+    avatar: "/team/yuan-feng.webp",
+    socials: { linkedin: "https://www.linkedin.com/in/kew-yuan-feng-0879aa226" },
+    summary:
+      "Kew Yuan Feng is part of the Software Development team at StarryTrader, where he contributes to building and improving the company's digital products and technical infrastructure. They focus on creating reliable, efficient, and user-friendly software solutions that support the platform's growth and overall user experience.",
+    tags: ["Software Development", "Infrastructure", "User Experience"],
+    reportsTo: "andre-liu",
+  },
 ];
 
 export const blogPreviews = [

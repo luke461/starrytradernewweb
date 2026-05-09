@@ -35,10 +35,11 @@ export function AboutHero() {
         width={600}
         height={600}
         priority
-        className="pointer-events-none absolute right-[-10%] top-1/2 hidden h-[60vh] max-h-[640px] w-auto -translate-y-1/2 select-none opacity-[0.22] md:block lg:right-[-6%]"
+        className="pointer-events-none absolute right-[-10%] top-1/2 hidden h-[60vh] max-h-[640px] w-auto -translate-y-1/2 select-none opacity-[0.55] md:block lg:right-[-6%]"
         style={{
           maskImage: "linear-gradient(to right, transparent 0%, #000 35%)",
           WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 35%)",
+          filter: "saturate(1.25) contrast(1.08)",
         }}
       />
 

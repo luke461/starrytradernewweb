@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle, Constellation } from "@/components/decoration/Sparkle";
@@ -28,32 +27,6 @@ export default function PressPage() {
               title="In the press."
               subtitle="Two campus newsrooms, two continents, one story about how a National Service bunk in Singapore became the unlikely starting point for an investing app used in fifteen countries."
             />
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="relative pb-4 pt-4">
-        <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <Reveal>
-            <Link href="/press/letter-from-the-founders" className="group block focus-visible:outline-none">
-              <Card interactive glow="violet" className="!p-10 md:!p-12">
-                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-starry-blue-light">
-                    Editorial · From the founders
-                  </p>
-                  <p className="font-mono text-caption text-ink-muted">A letter from the founders</p>
-                </div>
-                <div className="mt-6 flex items-start gap-4">
-                  <Sparkle tone="violet" size={28} className="mt-1 shrink-0" />
-                  <p className="font-display text-[24px] font-semibold leading-snug text-ink-primary md:text-[28px]">
-                    “We started StarryTrader as a side project. We&rsquo;re now committing it to the public good. Here&rsquo;s why.”
-                  </p>
-                </div>
-                <p className="mt-7 inline-flex items-center gap-1.5 text-[15px] font-medium text-starry-blue-light transition-transform duration-200 group-hover:translate-x-1">
-                  Read the letter <span aria-hidden>→</span>
-                </p>
-              </Card>
-            </Link>
           </Reveal>
         </div>
       </section>
