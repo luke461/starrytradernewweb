@@ -29,7 +29,8 @@ const cols = [
     links: [
       { label: "Get in touch", href: `mailto:${site.contact.general}` },
       { label: "Press inquiries", href: `mailto:${site.contact.press}` },
-      { label: "Partnership inquiries", href: `mailto:${site.contact.partnerships}` },
+      // Temporarily hidden — uncomment to restore the partnership inquiries footer link.
+      // { label: "Partnership inquiries", href: `mailto:${site.contact.partnerships}` },
       { label: "Sponsorship inquiries", href: `mailto:${site.contact.sponsorship}` },
     ],
   },
