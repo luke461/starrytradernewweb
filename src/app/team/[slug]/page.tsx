@@ -35,7 +35,7 @@ export default async function TeamMemberPage({ params }: { params: Params }) {
       <header className="relative overflow-hidden pt-24 pb-16 md:pt-32 md:pb-24">
         <div className="absolute inset-0 bg-hero-cosmic opacity-80" aria-hidden />
         <div className="relative mx-auto max-w-4xl px-5 md:px-8">
-          <Link href="/#team" className="inline-flex items-center gap-1.5 text-caption text-ink-soft hover:text-ink-primary">
+          <Link href="/team" className="inline-flex items-center gap-1.5 text-caption text-ink-soft hover:text-ink-primary">
             <span aria-hidden>←</span> Back to the team
           </Link>
 
