@@ -109,7 +109,7 @@ export default async function TeamMemberPage({ params }: { params: Params }) {
 
             {bio.links && bio.links.length > 0 && (
               <Card>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-starry-blue-light">Press and links</p>
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-starry-blue-light">{bio.linksLabel ?? "Press and links"}</p>
                 <ul className="mt-4 space-y-2.5 text-[15px]">
                   {bio.links.map((l) => (
                     <li key={l.href}>

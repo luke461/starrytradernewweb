@@ -84,6 +84,9 @@ export type TeamMember = {
   /** Slug of the person this member reports to. Drives the mobile
    *  "Reports to: …" caption. CEO has no value. */
   reportsTo?: string;
+  /** Bulleted core responsibilities for the /team/[slug] profile page.
+   *  Source: internal team structure doc (May 2026). */
+  responsibilities?: string[];
 };
 
 export const hero = {
@@ -266,12 +269,20 @@ export const team: TeamMember[] = [
     location: "Singapore",
     city: "Singapore",
     thinking: "My friends said the news had too many words. So I built something with fewer.",
-    socials: { linkedin: "https://www.linkedin.com/in/andre-liu-009733184", email: "andre@starrytrader.com" },
+    socials: { linkedin: "https://www.linkedin.com/in/andre-liu-009733184" },
     founder: true,
     avatar: "/team/andre.webp",
     summary:
       "Andre Liu is the co-founder of StarryTrader, a financial platform with a growing user base that helps investors understand market news more efficiently. He focuses on product direction, user growth, and partnerships, working with financial firms to expand the platform's reach. Alongside building StarryTrader, he studies Computer Science at the National University of Singapore.",
     tags: ["Computer Science", "NUS", "Mathematics"],
+    responsibilities: [
+      "Sets company vision, strategy, and the long-term roadmap for StarryTrader.",
+      "Leads overall product direction and feature prioritisation across beginner, intermediate, and advanced user tiers.",
+      "Drives investor relations, fundraising conversations, and high-level strategic partnerships.",
+      "Maintains educational and non-advisory boundaries within the app (regulatory compliance).",
+      "Leads hiring decisions and team structure as the company scales.",
+      "Final decision-maker on company strategy and direction.",
+    ],
   },
   // Temporarily hidden — uncomment this block to restore Emmanuel as co-founder.
   // {
@@ -297,6 +308,16 @@ export const team: TeamMember[] = [
       "Lucas Cheah is the COO and Head of Product at StarryTrader, where he leads product strategy and operations. A finance and economics student, Lucas brings a rare combination of entrepreneurial drive and institutional credibility with experience spanning investment banking, venture capital, and YouTube partnerships. Outside of work, Lucas enjoys reading, playing basketball, video games, and spending time with his loved ones.",
     tags: ["Finance", "Investment Banking", "Venture Capital"],
     reportsTo: "andre-liu",
+    responsibilities: [
+      "Serves as second in command across all business functions.",
+      "Owns the end-to-end product design process — from user research and wireframing through to in-app learning experience design.",
+      "Manages the full marketing material pipeline with consistent, on-brand output on a weekly cadence.",
+      "Oversees visual content, infographics, and educational explainer assets across social and in-app.",
+      "Leads competitor research and market trend analysis to inform product and content strategy.",
+      "Coordinates cross-functional operations across engineering, marketing, and communications.",
+      "Manages brand consistency across the app, social, website, and PR.",
+      "Owns the content calendar and ensures all output aligns with StarryTrader's tone.",
+    ],
   },
   {
     slug: "luke",
@@ -310,6 +331,13 @@ export const team: TeamMember[] = [
       "Luke Carter is the Digital Marketing Manager at StarryTrader, specializing in web design and online brand strategy. He focuses on creating compelling, user-friendly digital experiences that attract and retain investors. Alongside this role, he is matriculating into the National University of Singapore to study Business and majoring in Finance. Luke is an avid photographer and basketball player.",
     tags: ["NUS", "Business", "Finance"],
     reportsTo: "lucas",
+    responsibilities: [
+      "Owns StarryTrader's growth marketing strategy across all digital channels.",
+      "Manages and develops the StarryTrader website as the company's primary external-facing brand asset.",
+      "Coordinates with the COO on the weekly content calendar and campaign scheduling.",
+      "Tracks and reports on user acquisition metrics, CAC, and channel performance.",
+      "Supports product launches with go-to-market playbooks for new features.",
+    ],
   },
   {
     slug: "ava",
@@ -323,6 +351,14 @@ export const team: TeamMember[] = [
       "Ava Luo is the Head of Communications and Partnerships at StarryTrader. She is currently a student at Northwestern University studying journalism and economics with a minor in data science. Outside of school and StarryTrader, she enjoys smelling perfumes at department stores, baking her food cravings, and going on sidequests.",
     tags: ["Northwestern", "Journalism", "Economics"],
     reportsTo: "lucas",
+    responsibilities: [
+      "Leads all external communications — press releases, media pitches, and journalist relationships.",
+      "Manages StarryTrader's public relations strategy and secures coverage in fintech, education, and Gen Z publications.",
+      "Builds and maintains the institutional partnership pipeline: universities, high schools, community organisations, and credit unions.",
+      "Supports go-to-market through campus ambassador programmes and event coordination.",
+      "Handles inbound partnership enquiries from aligned financial institutions.",
+      "Works with the COO to ensure public-facing communications maintain StarryTrader's educational, non-advisory positioning.",
+    ],
   },
   {
     slug: "zen",
@@ -336,6 +372,14 @@ export const team: TeamMember[] = [
       "Zen Phang is a Strategy and Operations associate at StarryTrader, also managing the company Telegram and TikTok channels. He is a Business Analytics student at the National University of Singapore and NUS College, with a keen interest in high finance and a great appetite for learning. Zen enjoys running and road cycling, and is trying (not too successfully) to get into tennis.",
     tags: ["NUS", "NUS College", "Business Analytics"],
     reportsTo: "lucas",
+    responsibilities: [
+      "Supports the COO across day-to-day operational and strategic workstreams.",
+      "Assists data analysis — user metrics, market research, competitor benchmarking, and performance reporting.",
+      "Assists pitch deck preparation and investor presentation materials, working directly under the COO.",
+      "Assists marketing initiatives including campaign analysis, content briefs, and distribution reporting.",
+      "Produces structured reports and data visualisations to support executive decision-making.",
+      "Conducts financial and quantitative research tasks as directed by the COO.",
+    ],
   },
   {
     slug: "sinclair",
@@ -349,6 +393,11 @@ export const team: TeamMember[] = [
       "Sinclair Ng is a Software Engineer at StarryTrader, where he builds and maintains software products and works on backend infrastructure to keep things running smoothly behind the scenes. Currently studying Computer Science at the National University of Singapore, he brings both academic knowledge and hands-on experience to everything he works on. He enjoys tackling complex technical challenges and is passionate about writing clean, reliable code that makes a real difference. Outside of work and studies, you'll likely find him exploring a new destination or unwinding with a good show!",
     tags: ["NUS", "Computer Science", "Backend"],
     reportsTo: "andre-liu",
+    responsibilities: [
+      "Builds and maintains backend services and Python-based tooling.",
+      "Designs and operates data pipelines and API integrations across the platform.",
+      "Owns backend infrastructure reliability, observability, and uptime.",
+    ],
   },
   {
     slug: "yuan-feng",
@@ -362,6 +411,11 @@ export const team: TeamMember[] = [
       "Kew Yuan Feng is part of the Software Development team at StarryTrader, where he contributes to building and improving the company's digital products and technical infrastructure. They focus on creating reliable, efficient, and user-friendly software solutions that support the platform's growth and overall user experience.",
     tags: ["Software Development", "Infrastructure", "User Experience"],
     reportsTo: "andre-liu",
+    responsibilities: [
+      "Builds and maintains the StarryTrader mobile app across iOS and Android (Flutter and Dart).",
+      "Implements frontend features and refines the in-app user experience.",
+      "Manages app release scheduling and platform deployments.",
+    ],
   },
 ];
 
