@@ -77,7 +77,8 @@ export const fundingContent = {
     primaryCtaLabel: "Send us a funding inquiry",
     primaryCtaMailto: "mailto:team@starrytrader.com?subject=Funding%20inquiry",
     secondaryLinks: [
-      { label: "Read about our partners", href: "/partners" },
+      // Temporarily hidden — uncomment to restore the partners cross-link from /funding.
+      // { label: "Read about our partners", href: "/partners" },
       { label: "Read about the team", href: "/team" },
     ],
   },

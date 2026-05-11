@@ -5,10 +5,12 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle, Constellation } from "@/components/decoration/Sparkle";
 import { Reveal } from "@/components/decoration/Reveal";
 import { PlaneArc } from "@/components/decoration/PlaneArc";
-import { PartnerLogo } from "@/components/sections/HomePartners";
+// Temporarily hidden — uncomment to restore the brokerage partners section below.
+// import { PartnerLogo } from "@/components/sections/HomePartners";
 import { TeamOrgChart } from "@/components/sections/TeamOrgChart";
 import { FinalCta } from "@/components/sections/FinalCta";
-import { appPartners } from "@/content/home";
+// Temporarily hidden — uncomment to restore the brokerage partners section below.
+// import { appPartners } from "@/content/home";
 
 export const metadata: Metadata = {
   title: "The team",
@@ -38,6 +40,8 @@ export default function TeamPage() {
 
       <TeamOrgChart />
 
+      {/* Temporarily hidden — uncomment the brokerage partners section below
+          (and the PartnerLogo + appPartners imports up top) to restore.
       <section className="relative py-20 md:py-28">
         <div className="mx-auto max-w-5xl px-5 md:px-8">
           <Reveal>
@@ -59,6 +63,7 @@ export default function TeamPage() {
           </Reveal>
         </div>
       </section>
+      */}
 
       <section className="relative py-20 md:py-28">
         <div className="mx-auto max-w-5xl px-5 md:px-8">
