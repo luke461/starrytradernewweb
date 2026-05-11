@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Sparkle } from "@/components/decoration/Sparkle";
 import { Reveal } from "@/components/decoration/Reveal";
 import { FinalCta } from "@/components/sections/FinalCta";
+import { ResearchIndex } from "@/components/sections/ResearchIndex";
 import { problemStats } from "@/content/home";
 import { site } from "@/lib/site";
 
@@ -59,14 +60,13 @@ export default function ResearchPage() {
             <p className="mt-5 max-w-2xl text-body-lg text-ink-soft">
               StarryTrader is built on peer-reviewed research about how Gen Z learns, invests, and feels about money. Every design decision traces back to a citation.
             </p>
-            <div className="mt-8">
-              <Button variant="primary" size="lg" href={site.research.pdfPath} withArrow magnetic>
-                Download the full research PDF
-              </Button>
-            </div>
+            {/* PDF download CTA hidden until the file exists at /research/starrytrader-research-2026.pdf.
+                Re-enable once the asset is shipped. site.research.pdfPath is still defined. */}
           </Reveal>
         </div>
       </section>
+
+      <ResearchIndex />
 
       <section className="relative py-20 md:py-28">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 px-5 md:grid-cols-3 md:px-8">
