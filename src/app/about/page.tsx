@@ -5,7 +5,8 @@ import { WhyFree } from "@/components/about/WhyFree";
 import { WhatWeDo } from "@/components/about/WhatWeDo";
 import { AboutImpact } from "@/components/about/AboutImpact";
 import { Personas } from "@/components/about/Personas";
-import { AboutPartners } from "@/components/about/AboutPartners";
+// Temporarily hidden — uncomment to restore the about page partners section.
+// import { AboutPartners } from "@/components/about/AboutPartners";
 import { JoinMission } from "@/components/about/JoinMission";
 import { AboutContactSection } from "@/components/about/AboutContactSection";
 import { ClosingTagline } from "@/components/about/ClosingTagline";
@@ -25,7 +26,8 @@ export default function AboutPage() {
       <WhatWeDo />
       <AboutImpact />
       <Personas />
-      <AboutPartners />
+      {/* Temporarily hidden — uncomment <AboutPartners /> below (and the import) to restore. */}
+      {/* <AboutPartners /> */}
       <JoinMission />
       <AboutContactSection />
       <ClosingTagline />

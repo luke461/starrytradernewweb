@@ -11,7 +11,8 @@ const links = [
   { href: "/product", label: "What we’re building" },
   { href: "/about", label: "About" },
   { href: "/research", label: "The research" },
-  { href: "/partners", label: "Partners" },
+  // Temporarily hidden — uncomment to restore the /partners nav entry.
+  // { href: "/partners", label: "Partners" },
   { href: "/press", label: "Press" },
   { href: "/team", label: "Team" },
   { href: "/blog", label: "Blog" },
